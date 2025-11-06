@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body { font-family: Arial; margin: 50px; }
+        form { margin: 20px 0; }
+        input { margin: 5px; padding: 8px; }
+        button { margin: 5px; padding: 8px; background: #4CAF50; color: white; border: none; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Login Fitness App</h1>
+    
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    
+    <form action="/login" method="post">
+        <input type="text" name="nom" placeholder="Usuario" required>
+        <input type="password" name="cont" placeholder="Contraseña" required>
+        <button type="submit">Entrar</button>
+    </form>
+    
+</body>
+</html>
