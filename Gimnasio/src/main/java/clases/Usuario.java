@@ -80,8 +80,28 @@ public class Usuario implements OperacionesSalud{
 
 	//para calcular el indice de masa corporal
 	public double calculaIndiceMasaCorporal() {
-        return peso / ((altura/100) * (altura/100));
-    }
+	    // Validar que peso y altura sean valores positivos
+	    if (peso <= 0) {
+	        throw new IllegalArgumentException("El peso debe ser un valor positivo");
+	    }
+	    if (altura <= 0) {
+	        throw new IllegalArgumentException("La altura debe ser un valor positivo");
+	    }
+	    
+	    // Validar que la altura no sea demasiado pequeña (mínimo 30 cm)
+	    if (altura < 30) {
+	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy pequeña)");
+	    }
+	    
+	    // Validar que la altura no sea demasiado grande (máximo 300 cm)
+	    if (altura > 300) {
+	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy grande)");
+	    }
+	    
+	    double alturaEnMetros = altura / 100;
+	    return peso / (alturaEnMetros * alturaEnMetros);
+	}
+	
 	
 	@Override
     public String obtenerCategoriaIMC() {
