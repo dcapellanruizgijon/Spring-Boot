@@ -2,7 +2,7 @@ package clases;
 
 import java.util.ArrayList;
 
-public class Usuario {
+public class Usuario implements OperacionesSalud{
 	
 	private String nombre;
     private String contrasena;
@@ -60,19 +60,36 @@ public class Usuario {
 		this.altura = altura;
 	}
 
+	//lo uso en el método de agregar ejercicio del controlador
 	public ArrayList<Rutina> getRutinas() {
 		return rutinas;
 	}
-
 	
 	public void setRutinas(ArrayList<Rutina> rutinas) {
 		this.rutinas = rutinas;
 	}
+	
+	//para agregar una neva rutina
+	public void agregarRutina(Rutina rutina) {
+        this.rutinas.add(rutina);
+    }
+	
 
 	
+	//implementamos la interfaz de operaciones de salud:
+
 	//para calcular el indice de masa corporal
 	public double calculaIndiceMasaCorporal() {
         return peso / ((altura/100) * (altura/100));
+    }
+	
+	@Override
+    public String obtenerCategoriaIMC() {
+        double imc = calculaIndiceMasaCorporal();
+        if (imc < 18.5) return "Bajo peso";
+        else if (imc < 25) return "Normal";
+        else if (imc < 30) return "Sobrepeso";
+        else return "Obesidad";
     }
 	
 }

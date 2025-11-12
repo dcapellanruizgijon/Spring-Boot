@@ -12,13 +12,15 @@
     </style>
 </head>
 <body>
-    <h1>Login Fitness App</h1>
+    <h1>Bien venido a Fast Rutinas, para acceder a la web inicie sesion</h1>
     
+	<!--si existe un error lo lanza (configurado en el controlador de login)-->
     <div th:if="${error}" class="error" th:text="${error}"></div>
     
+	
     <form action="/login" method="post">
-        <input type="text" name="nom" placeholder="Usuario" required>
-        <input type="password" name="cont" placeholder="Contraseña" required>
+        <input type="text" name="nom" required>
+        <input type="password" name="cont" required>
         <button type="submit">Entrar</button>
     </form>
     

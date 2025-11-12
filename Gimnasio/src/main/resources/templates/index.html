@@ -2,35 +2,183 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Fitness</title>
+    <title>Fat Rutinas</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .section { margin: 15px 0; padding: 10px; border: 1px solid #ccc; }
-        button { margin: 5px; padding: 8px; background: #2196F3; color: white; border: none; }
-        .cerrarSesion { background: #f44336; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .seccion {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            background: white;
+        }
+        button { 
+            margin: 5px; 
+            padding: 8px 12px; 
+            background: #2196F3; 
+            color: white; 
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .cerrarSesion { 
+            background: #f44336; 
+        }
+        input[type="text"] {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 250px;
+        }
+        .ejercicio {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #4CAF50;
+        }
+        .completado {
+            background: #e8f5e8;
+            border-left-color: #2E7D32;
+            text-decoration: line-through;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 1px solid #2196F3;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        p {
+            margin: 5px 0;
+            color: #666;
+        }
+        strong {
+            color: #333;
+        }
+        .rutina-container {
+            background: white;
+            border: 1px solid #FF6B6B;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .cookie-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+            border-left: 3px solid #2196F3;
+        }
+        .container-bienvenida {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <h1>Mi Fitness App</h1>
-    
-    <div class="section">
-        <h2>Bienvenido: <span th:text="${usuario.nombre}"></span>. A continuación mostraremos sus datos</h2>
-        <p>Edad: <span th:text="${usuario.edad}"></span> años</p>
-        <p>Peso: <span th:text="${usuario.peso}"></span> kg</p>
-        <p>Altura: <span th:text="${usuario.altura}"></span> cm</p>
-        <p>IMC: <span th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span></p>
+    <div class="container">
+        <h1>FAST RUTINAS</h1>
         
-        <a href="/cerrarSesion"><button class="cerrarSesion">Cerrar Sesión</button></a>
-    </div>
+        <!-- Información del usuario y cookies -->
+        <div class="container-bienvenida">
+            <h2>Bienvenido: <span th:text="${usuario.nombre}"></span>!</h2>																<!--#se usa para formatear el resultado (minimo 1 decimal maximo 2)-->
+            <h3>Este es tu indice de masa corporal: <span th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span>!</h3>
+            <h3>Este es tu rango segun tu indice de masa corporal: <span th:text="${usuario.obtenerCategoriaIMC()}"></span>!</h3>
+            
+            <!-- Mostrar cookie de última rutina -->
+            <div class="cookie-info">
+                <p><strong>La ultima rutina que creaste fue:</strong> <span th:text="${ultimaRutina}"></span></p>
+                
+                <!-- Enlace para eliminar la cookie -->
+                <a href="/eliminar-cookie">
+                    <button style="background: #FF6B6B;">Eliminar Cookie</button>
+                </a>
+            </div>
+            
+            <!-- Botón para cerrar sesión -->
+            <a href="/cerrarSesion">
+                <button class="cerrarSesion">Cerrar Sesión</button>
+            </a>
+        </div>
 
-    <div class="section">
-        <h2>Mis Rutinas</h2>
-        <p>Próximamente podrás crear rutinas aquí</p>
-    </div>
+        <!-- Creamos una nueva rutina y le damos un nombre (el formulario se va al controlador)-->
+        <div class="section">
+            <h2>Crear Nueva Rutina</h2>
+            <form action="/crear-rutina" method="post">
+                <input type="text" name="nombre" required>
+                <button type="submit" style="background: #4CAF50;">Crear Rutina</button>
+            </form>
+        </div>
 
-    <div class="section">
-        <h2>Mis Ejercicios</h2>
-        <p>Próximamente podrás agregar ejercicios aquí</p>
+        <!-- Lista de rutinas del usuario -->
+        <div class="section">
+            <h2>Mis Rutinas</h2>
+            
+            <!--Si el array de rutinas del usuario está vacia Muestra este mensaje-->
+            <div th:if="${usuario.rutinas.empty}" style="text-align: center; padding: 20px; color: #666;">
+                <p>No tienes rutinas creadas. ¡Crea tu primera rutina arriba!</p>
+            </div>
+            
+            <!-- Recorre cada rutina del usuario (solo se ejecuta este div si existe, si no existen rutinas se lo salta)-->
+            <div th:each="rutina, rutinaStatus : ${usuario.rutinas}">
+                <div class="rutina-container">
+                    <h3 th:text="${rutina.nombre}"></h3>
+                    
+                    <!-- Formulario para agregar ejercicio a esta rutina específica -->
+                    <form action="/agregar-ejercicio" method="post">
+                        <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}"><!--rutinaStatus.index devuelve el indice de la rutina actual en el arrayList de rutinas-->
+                        <input type="text" name="nombreEjercicio" required>
+                        <button type="submit" style="background: #FF9800;">Agregar Ejercicio</button>
+                    </form>
+                    
+					
+                    <!-- Si la rutina aun no tiene ejercicio muestra este div-->
+                    <div th:if="${rutina.ejercicios.empty}" style="text-align: center; padding: 15px; color: #888;">
+                        <p>Esta rutina no tiene ejercicios. ¡Agrega algunos!</p>
+                    </div>
+                    
+					<!--Cuando a la rutina le metamos al gun ejercicio es cuando se ejecutará este div-->
+                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" 
+                         th:classappend="${ejercicio.completado} ? 'ejercicio completado' : 'ejercicio'">
+                        <p>
+                            <strong th:text="${ejercicio.nombre}"></strong> - 
+                            Estado: <span th:text="${ejercicio.completado} ? 'COMPLETADO' : 'PENDIENTE'"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
