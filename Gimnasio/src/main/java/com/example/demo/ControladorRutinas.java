@@ -45,7 +45,7 @@ public class ControladorRutinas {
             return "login";
         }
         
-        //para controlar lo que pasa si aun no hubiera ultimaRutina
+        //para controlar lo que pasa si aun no hubiera ultimaRutina(si el default value es empty("")
         if (ultimaRutina.isEmpty()) {
             ultimaRutina = "Nombre de la rutina no está disponible";
         }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Fat Rutinas</title>
+    <title>Fast Rutinas</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -168,12 +168,12 @@
                         <p>Esta rutina no tiene ejercicios. ¡Agrega algunos!</p>
                     </div>
                     
-					<!--Cuando a la rutina le metamos al gun ejercicio es cuando se ejecutará este div-->
+					<!--Solo se ejecuta cuando ya hayamos añadido un ejercicio a una rutina-->
                     <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" 
                          th:classappend="${ejercicio.completado} ? 'ejercicio completado' : 'ejercicio'">
                         <p>
                             <strong th:text="${ejercicio.nombre}"></strong> - 
-                            Estado: <span th:text="${ejercicio.completado} ? 'COMPLETADO' : 'PENDIENTE'"></span>
+                            Estado: <span th:text="${ejercicio.completado} ? 'COMPLETADO' : 'PENDIENTE'"></span><!--Mostramos el estado que por defectos va ser pendiente en todos-->
                         </p>
                     </div>
                 </div>
