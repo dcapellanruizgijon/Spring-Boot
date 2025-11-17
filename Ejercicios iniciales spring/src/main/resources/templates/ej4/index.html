@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+	<style>
+	</style>
+</head>
+
+<body>
+    <h1>Tabla de noticias</h1>
+	
+	<!-- Mensaje de bienvenida (solo aparece si existe) -->
+	<h2 th:if="${mensajeBienvenida}" th:text="${mensajeBienvenida}"></h2>
+	
+	<a th:href="@{/dirigeNuevoAnuncio}">Crear Nuevo Anuncio</a>
+
+	<!--aqui tendremos que recorrer los anuncios y mostrarlos-->
+	<div th:if="${anuncios != null and !anuncios.empty}">
+		<h3>Lista de anuncios</h3>
+		<div th:each="anuncio, status: ${anuncios}">
+			<a th:href="@{/mostrarAnuncio(nombre=${anuncio.nombre})}">
+				<span th:text="${anuncio.nombre}"></span> - <span th:text="${anuncio.asunto}"></span>
+			</a>
+		</div>
+	</div>
+</body>
+
+</html>

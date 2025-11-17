@@ -169,8 +169,8 @@
                     </div>
                     
 					<!--Solo se ejecuta cuando ya hayamos añadido un ejercicio a una rutina-->
-                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" 
-                         th:classappend="${ejercicio.completado} ? 'ejercicio completado' : 'ejercicio'">
+					<!--Classappened añade clases a un elemento si eliminar las clases existentes-->
+                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" th:classappend="${ejercicio.completado} ? 'ejercicio completado' : 'ejercicio'">
                         <p>
                             <strong th:text="${ejercicio.nombre}"></strong> - 
                             Estado: <span th:text="${ejercicio.completado} ? 'COMPLETADO' : 'PENDIENTE'"></span><!--Mostramos el estado que por defectos va ser pendiente en todos-->

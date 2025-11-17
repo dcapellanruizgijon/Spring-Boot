@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>La fecha es: <span th:text="${fecha}"></span></p>
+	<table>
+		<tr th:each="contacto : ${arraylist}">
+			<td th:text="${contacto.nombre}"></td>
+			<td th:text="${contacto.apellido}"></td>
+			<td th:text="${contacto.correo}"></td>
+			<td th:text="${contacto.sexo}"></td>
+		</tr>
+	</table>
+</body>
+
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<!-- 
+  DECLARACIÓN THYMELEAF - Fundamental para que funcione
+  xmlns:th="http://www.thymeleaf.org" habilita los atributos Thymeleaf
+  Esto permite que el HTML sea válido y pueda abrirse directamente en el navegador
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+      th:text - REEMPLAZA el contenido del elemento
+      ${titulo} hace referencia al atributo "titulo" del Model en el controlador
+      Cuando se procesa el template, el texto "Ejemplos de Thymeleaf" reemplaza "Título por defecto"
+    -->
+    <title th:text="${titulo}">Título por defecto</title>
+    
+    <!-- Bootstrap para estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        .fila-impar { background-color: #f8f9fa; }
+        .fila-par { background-color: #ffffff; }
+        .precio { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Navbar común a todas las páginas -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">Spring Boot Demo</a>
+            <div class="navbar-nav">
+                <a class="nav-link" th:href="@{/}">Inicio</a>
+                <a class="nav-link" th:href="@{/usuarios/lista}">Usuarios</a>
+                <a class="nav-link" th:href="@{/thymeleaf/ejemplos}">Thymeleaf</a>
+                <a class="nav-link" th:href="@{/sesion/login}">Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- 
+                  RELACIÓN CON EL CONTROLADOR:
+                  ThymeleafController.ejemplosThymeleaf() añade estos atributos al Model:
+                  - titulo = "Ejemplos de Thymeleaf"
+                  - mensaje = "<strong>Texto</strong> con HTML"
+                  - precio = 29.99
+                  - etc...
+                -->
+                <h1 th:text="${titulo}">Ejemplos de Thymeleaf</h1>
+                
+                <!-- Mensajes flash - vienen de RedirectAttributes -->
+                <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}">Mensaje</div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}">Error</div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 1: EXPRESIONES BÁSICAS Y MOSTRAR DATOS -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>1. Expresiones Básicas</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- 
+                          th:text vs th:utext - DIFERENCIA IMPORTANTE:
+                          - th:text: ESCAPA el HTML (convierte <strong> a &lt;strong&gt;)
+                          - th:utext: NO ESCAPA el HTML (permite etiquetas HTML)
+                        -->
+                        <p><strong>th:text (escapa HTML):</strong> 
+                           <span th:text="${mensaje}">Texto normal</span></p>
+                        
+                        <p><strong>th:utext (no escapa HTML):</strong> 
+                           <span th:utext="${mensaje}">Texto con <strong>negrita</strong></span></p>
+                        
+                        <!-- 
+                          Mostrar números y cálculos:
+                          ${precio} viene del controlador como 29.99
+                          Se pueden hacer operaciones matemáticas directamente
+                        -->
+                        <p><strong>Precio:</strong> 
+                           <span class="precio" th:text="${precio}">0.00</span> €</p>
+                        
+                        <p><strong>Precio con descuento (15%):</strong> 
+                           <span class="precio" th:text="${precio * (1 - descuento)}">0.00</span> €</p>
+                        
+                        <!-- 
+                          Acceso a propiedades de objetos:
+                          ${usuario.nombre} llama a usuario.getNombre()
+                          ${usuario.email} llama a usuario.getEmail()
+                        -->
+                        <p><strong>Usuario actual:</strong> 
+                           <span th:text="${usuario.nombre}">Nombre</span> 
+                           (<span th:text="${usuario.email}">email</span>)</p>
+                        
+                        <!-- 
+                          Mostrar fechas con formato:
+                          #temporals es un objeto de utilidad de Thymeleaf
+                          format() permite formatear fechas
+                        -->
+                        <p><strong>Fecha actual:</strong> 
+                           <span th:text="${#temporals.format(fechaActual, 'dd/MM/yyyy HH:mm')}">
+                               01/01/2023 12:00
+                           </span></p>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 2: CONDICIONALES -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>2. Condicionales</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- 
+                          th:if / th:unless - Mostrar elementos condicionalmente
+                          ${activo} viene del controlador como true
+                        -->
+                        <div th:if="${activo}" class="alert alert-success">
+                            ✅ El usuario está ACTIVO (th:if="${activo}")
+                        </div>
+                        
+                        <div th:unless="${activo}" class="alert alert-warning">
+                            ⚠ El usuario está INACTIVO (th:unless="${activo}")
+                        </div>
+                        
+                        <!-- 
+                          th:switch / th:case - Estructura switch
+                          Evalúa ${usuario.edad} que viene del controlador como 28
+                        -->
+                        <div class="mb-3">
+                            <strong>Switch con edad (28):</strong>
+                            <div th:switch="${usuario.edad}">
+                                <span th:case="18" class="badge bg-primary">Recién mayor de edad</span>
+                                <span th:case="25" class="badge bg-success">25 años</span>
+                                <span th:case="*" class="badge bg-info">
+                                    Otra edad: <span th:text="${usuario.edad}">0</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Condicionales múltiples -->
+                        <div th:if="${usuario.edad >= 18 and usuario.activo}" class="alert alert-info">
+                            Usuario mayor de edad y activo
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 3: BUCLES - ITERACIONES -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>3. Bucles y Iteraciones</h2>
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- 
+                          BUCLE SIMPLE SOBRE LISTA:
+                          th:each="fruta : ${frutas}" itera sobre la lista de frutas
+                          ${fruta} contiene el elemento actual en cada iteración
+                          
+                          RELACIÓN CON CONTROLADOR:
+                          ThymeleafController crea: List<String> frutas = ["Manzana", "Naranja", "Pera", "Uva"]
+                        -->
+                        <h4>Lista de Frutas (simple):</h4>
+                        <ul class="list-group mb-4">
+                            <li th:each="fruta : ${frutas}" 
+                                class="list-group-item" 
+                                th:text="${fruta}">
+                                Fruta ejemplo
+                            </li>
+                        </ul>
+
+                        <!-- 
+                          BUCLE SOBRE LISTA DE OBJETOS CON ESTADO:
+                          th:each="usuario, iterStat : ${usuarios}"
+                          - usuario: el objeto actual (Usuario)
+                          - iterStat: objeto con información del estado de la iteración
+                            - iterStat.index: índice actual (0-based)
+                            - iterStat.count: contador (1-based)
+                            - iterStat.size: tamaño total
+                            - iterStat.even/odd: si es par/impar
+                            - iterStat.first/last: si es primero/último
+                          
+                          RELACIÓN CON CONTROLADOR:
+                          ThymeleafController crea List<Usuario> usuarios con 4 usuarios
+                        -->
+                        <h4>Lista de Usuarios (con estado del bucle):</h4>
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Índice</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Edad</th>
+                                    <th>Estado</th>
+                                    <th>Posición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 
+                                  th:each con variable de estado "estado"
+                                  th:class aplica clases CSS condicionalmente
+                                -->
+                                <tr th:each="usuario, estado : ${usuarios}" 
+                                    th:class="${estado.odd} ? 'fila-impar' : 'fila-par'">
+                                    
+                                    <!-- iterStat.count - número de iteración (1, 2, 3...) -->
+                                    <td th:text="${estado.count}">1</td>
+                                    
+                                    <!-- iterStat.index - índice base 0 (0, 1, 2...) -->
+                                    <td th:text="${estado.index}">0</td>
+                                    
+                                    <!-- Propiedades del objeto Usuario -->
+                                    <td th:text="${usuario.nombre}">Nombre</td>
+                                    <td th:text="${usuario.email}">email@ejemplo.com</td>
+                                    <td th:text="${usuario.edad}">0</td>
+                                    
+                                    <!-- Condicional dentro del bucle -->
+                                    <td>
+                                        <span th:if="${usuario.activo}" class="badge bg-success">Activo</span>
+                                        <span th:unless="${usuario.activo}" class="badge bg-danger">Inactivo</span>
+                                    </td>
+                                    
+                                    <!-- Usando first y last -->
+                                    <td>
+                                        <span th:if="${estado.first}" class="badge bg-primary">Primero</span>
+                                        <span th:if="${estado.last}" class="badge bg-warning">Último</span>
+                                        <span th:if="${not estado.first and not estado.last}" 
+                                              class="badge bg-secondary">Intermedio</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <!-- 
+                              Mostrar información del bucle fuera de él:
+                              ${#lists.size(usuarios)} usa la utilidad #lists de Thymeleaf
+                            -->
+                            <tfoot>
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <strong>Total usuarios:</strong> 
+                                        <span th:text="${#lists.size(usuarios)}">0</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- 
+                          BUCLE SOBRE MAPAS:
+                          th:each="entry : ${paises}" itera sobre el Map<String, String>
+                          entry.key y entry.value acceden a clave y valor
+                          
+                          RELACIÓN CON CONTROLADOR:
+                          ThymeleafController crea: Map<String, String> paises
+                          con entradas como "ES" -> "España", "MX" -> "México", etc.
+                        -->
+                        <h4>Mapa de Países:</h4>
+                        <div class="row">
+                            <div th:each="entry : ${paises}" class="col-md-3 mb-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <strong th:text="${entry.key}">Código</strong>: 
+                                        <span th:text="${entry.value}">País</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 4: ENLACES Y URLs -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>4. Enlaces y URLs</h2>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>th:href</strong> genera URLs relativas al contexto de la aplicación</p>
+                        
+                        <div class="mb-3">
+                            <!-- 
+                              @{/ruta} - URL absoluta desde el contexto
+                              Se convierte en: /ruta
+                            -->
+                            <a th:href="@{/}" class="btn btn-outline-primary me-2">Inicio</a>
+                            
+                            <!-- 
+                              @{/usuarios/lista} - URL a lista de usuarios
+                              RELACIÓN: Apunta a UsuarioController.listarUsuarios()
+                            -->
+                            <a th:href="@{/usuarios/lista}" class="btn btn-outline-primary me-2">
+                                Lista de Usuarios
+                            </a>
+                            
+                            <!-- 
+                              @{/sesion/login} - URL al login
+                              RELACIÓN: Apunta a SesionCookieController.mostrarLogin()
+                            -->
+                            <a th:href="@{/sesion/login}" class="btn btn-outline-primary">
+                                Iniciar Sesión
+                            </a>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <!-- 
+                              @{/ruta/{param}(param=valor)} - URLs con parámetros path
+                              Se convierte en: /usuarios/detalle/1
+                            -->
+                            <a th:href="@{/usuarios/detalle/{id}(id=${usuario.id})}" 
+                               class="btn btn-outline-success me-2">
+                                Ver mi perfil (ID: <span th:text="${usuario.id}">1</span>)
+                            </a>
+                            
+                            <!-- 
+                              @{/ruta?param=valor} - URLs con query parameters
+                              Se convierte en: /usuarios/buscar?nombre=Ana
+                            -->
+                            <a th:href="@{/usuarios/buscar(nombre='Ana', email='')}" 
+                               class="btn btn-outline-info">
+                                Buscar usuarios llamados Ana
+                            </a>
+                        </div>
+                        
+                        <!-- 
+                          Enlace con múltiples parámetros:
+                          Se convierte en: /usuarios/editar/1?modo=rapido
+                        -->
+                        <div>
+                            <a th:href="@{/usuarios/editar/{id}(id=${usuario.id}, modo='rapido')}" 
+                               class="btn btn-outline-warning">
+                                Editar en modo rápido
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 5: FORMULARIOS -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>5. Formularios</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- 
+                          th:action - Define la URL donde se enviará el formulario
+                          th:object - Define el objeto que se bindeará con los campos
+                          
+                          RELACIÓN CON CONTROLADOR:
+                          - GET /usuarios/nuevo: muestra este formulario con usuario vacío
+                          - POST /usuarios/guardar: procesa el formulario
+                        -->
+                        <form th:action="@{/usuarios/guardar}" 
+                              th:object="${usuario}" 
+                              method="post"
+                              class="border p-3 rounded">
+                            
+                            <!-- Campo oculto para el ID -->
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <!-- 
+                                      th:field - BINDING AUTOMÁTICO:
+                                      *{nombre} se bindea con usuario.setNombre()
+                                      Equivale a: name="nombre" th:value="${usuario.nombre}"
+                                    -->
+                                    <label class="form-label">Nombre:</label>
+                                    <input type="text" th:field="*{nombre}" 
+                                           class="form-control" 
+                                           placeholder="Ingresa tu nombre">
+                                    <div class="form-text">Campo obligatorio</div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Email:</label>
+                                    <input type="email" th:field="*{email}" 
+                                           class="form-control" 
+                                           placeholder="ejemplo@email.com">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Edad:</label>
+                                    <input type="number" th:field="*{edad}" 
+                                           class="form-control" min="0" max="120">
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <!-- 
+                                      SELECT con th:field:
+                                      *{activo} se bindea con usuario.setActivo()
+                                    -->
+                                    <label class="form-label">Estado:</label>
+                                    <select th:field="*{activo}" class="form-select">
+                                        <option value="true">Activo</option>
+                                        <option value="false">Inactivo</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <!-- 
+                                      SELECT con opciones dinámicas:
+                                      th:each genera las opciones desde la lista ${generos}
+                                    -->
+                                    <label class="form-label">Género:</label>
+                                    <select class="form-select" name="genero">
+                                        <option value="">Seleccionar...</option>
+                                        <option th:each="genero : ${generos}"
+                                                th:value="${genero}"
+                                                th:text="${genero}">
+                                            Género
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Intereses:</label>
+                                <div th:each="interes : ${intereses}" class="form-check">
+                                    <!-- 
+                                      CHECKBOX múltiple:
+                                      th:value define el valor de cada checkbox
+                                    -->
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           th:value="${interes}"
+                                           th:id="${'interes-' + interes}">
+                                    <label class="form-check-label" 
+                                           th:for="${'interes-' + interes}"
+                                           th:text="${interes}">
+                                        Interés
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de usuario:</label>
+                                <div class="form-check">
+                                    <!-- RADIO BUTTONS -->
+                                    <input class="form-check-input" type="radio" name="tipoUsuario" value="BASIC" id="tipo-basic">
+                                    <label class="form-check-label" for="tipo-basic">Básico</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tipoUsuario" value="PREMIUM" id="tipo-premium">
+                                    <label class="form-check-label" for="tipo-premium">Premium</label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                            <a th:href="@{/usuarios/lista}" class="btn btn-secondary">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 6: UTILIDADES THYMELEAF -->
+                <!-- ========================================================================= -->
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>6. Utilidades Thymeleaf</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Utilidades de Strings:</h5>
+                                <ul class="list-unstyled">
+                                    <!-- #strings - Utilidades para manipular strings -->
+                                    <li><strong>Mayúsculas:</strong> 
+                                        <code th:text="${#strings.toUpperCase(usuario.nombre)}">ANA</code></li>
+                                    <li><strong>Longitud nombre:</strong> 
+                                        <code th:text="${#strings.length(usuario.nombre)}">10</code></li>
+                                    <li><strong>¿Contiene 'Ana'?:</strong> 
+                                        <code th:text="${#strings.contains(usuario.nombre, 'Ana')}">true</code></li>
+                                    <li><strong>¿Está vacío?:</strong> 
+                                        <code th:text="${#strings.isEmpty(usuario.nombre)}">false</code></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Utilidades de Números:</h5>
+                                <ul class="list-unstyled">
+                                    <!-- #numbers - Utilidades para formatear números -->
+                                    <li><strong>Precio formateado:</strong> 
+                                        <code th:text="${#numbers.formatDecimal(precio, 1, 2)}">29.99</code></li>
+                                    <li><strong>Porcentaje:</strong> 
+                                        <code th:text="${#numbers.formatPercent(descuento, 1, 2)}">15.00%</code></li>
+                                    <li><strong>Número entero:</strong> 
+                                        <code th:text="${#numbers.formatInteger(usuario.edad, 3)}">028</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h5>Utilidades de Listas:</h5>
+                                <ul class="list-unstyled">
+                                    <!-- #lists - Utilidades para listas -->
+                                    <li><strong>Tamaño lista usuarios:</strong> 
+                                        <code th:text="${#lists.size(usuarios)}">4</code></li>
+                                    <li><strong>¿Está vacía?:</strong> 
+                                        <code th:text="${#lists.isEmpty(usuarios)}">false</code></li>
+                                    <li><strong>¿Contiene 'Carlos'?:</strong> 
+                                        <code th:text="${#lists.contains(usuarios, usuario)}">false</code></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Utilidades de Fechas:</h5>
+                                <ul class="list-unstyled">
+                                    <!-- #temporals - Utilidades para fechas -->
+                                    <li><strong>Día:</strong> 
+                                        <code th:text="${#temporals.day(fechaActual)}">15</code></li>
+                                    <li><strong>Mes:</strong> 
+                                        <code th:text="${#temporals.month(fechaActual)}">12</code></li>
+                                    <li><strong>Año:</strong> 
+                                        <code th:text="${#temporals.year(fechaActual)}">2023</code></li>
+                                    <li><strong>Hora:</strong> 
+                                        <code th:text="${#temporals.hour(fechaActual)}">14</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- SECCIÓN 7: JAVASCRIPT CON THYMELEAF -->
+                <!-- ========================================================================= -->
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>7. JavaScript con Thymeleaf</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Thymeleaf puede inyectar datos en JavaScript de forma segura</p>
+                        
+                        <!-- 
+                          th:inline="javascript" permite usar expresiones Thymeleaf en JS
+                          /*<![CDATA[*/ y /*]]>*/ evitan problemas de sintaxis
+                        -->
+                        <script th:inline="javascript">
+                            /*<![CDATA[*/
+                            
+                            // Datos del usuario desde Thymeleaf
+                            var usuarioJS = {
+                                id: /*[[${usuario.id}]]*/ 1,
+                                nombre: /*[[${usuario.nombre}]]*/ 'Nombre por defecto',
+                                email: /*[[${usuario.email}]]*/ 'email@defecto.com',
+                                edad: /*[[${usuario.edad}]]*/ 0,
+                                activo: /*[[${usuario.activo}]]*/ true
+                            };
+                            
+                            // Lista de usuarios
+                            var usuariosJS = /*[[${usuarios}]]*/ [];
+                            
+                            // Configuración
+                            var config = {
+                                appName: /*[[${titulo}]]*/ 'App',
+                                precio: /*[[${precio}]]*/ 0.0,
+                                fecha: /*[[${#temporals.format(fechaActual, 'yyyy-MM-dd')}]]*/ '2023-01-01'
+                            };
+                            
+                            console.log('Usuario desde Thymeleaf:', usuarioJS);
+                            console.log('Total usuarios:', usuariosJS.length);
+                            console.log('Configuración:', config);
+                            
+                            // Función que usa datos de Thymeleaf
+                            function mostrarUsuario() {
+                                alert('Usuario: ' + usuarioJS.nombre + '\nEmail: ' + usuarioJS.email);
+                            }
+                            
+                            /*]]>*/
+                        </script>
+                        
+                        <button onclick="mostrarUsuario()" class="btn btn-info">
+                            Mostrar datos de usuario (consola)
+                        </button>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                Revisa la consola del navegador para ver los datos inyectados desde Thymeleaf
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script personalizado -->
+    <script>
+        // Función para demostrar el uso de datos en JavaScript
+        function demostrarThymeleafJS() {
+            // Estos datos vienen inyectados desde Thymeleaf arriba
+            console.log('Demostración Thymeleaf + JavaScript completada');
+        }
+        
+        // Ejecutar cuando la página cargue
+        document.addEventListener('DOMContentLoaded', demostrarThymeleafJS);
+    </script>
+</body>
+</html>

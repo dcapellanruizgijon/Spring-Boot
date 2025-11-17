@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+	<style>
+		* {
+			margin: 5px auto;
+		}
+	</style>
+</head>
+
+<body>
+    <form action="/anuncio" method="get">
+		Nombre:
+		<input type="text" name="nombre" required> <br>
+		Asunto:
+		<input type="text" name="asunto"> <br>
+		Comentario:
+		<textarea cols="40" rows="5" name="comentario" placeholder="comentario"></textarea> <br>
+		<input type="submit" value="Enviar">
+	</form>
+</body>
+
+</html>
