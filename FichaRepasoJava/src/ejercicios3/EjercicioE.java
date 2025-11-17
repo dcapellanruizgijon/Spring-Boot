@@ -1,8 +1,7 @@
 package ejercicios3;
-import java.util.Collections; 
+import java.util.Collections;  
 import java.util.ArrayList;
 
-import repaso.NumerosArrayList;
 
 public class EjercicioE {
 
