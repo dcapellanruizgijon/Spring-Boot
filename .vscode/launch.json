@@ -5,6 +5,13 @@
             "name": "PracticandoApplication",
             "request": "launch",
             "mainClass": "com.example.practicando.examenMañana.PracticandoApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "PracticandoApplication",
+            "request": "launch",
+            "mainClass": "com.example.practicando.examenMañana.PracticandoApplication",
             "projectName": "practicando"
         },
         {
