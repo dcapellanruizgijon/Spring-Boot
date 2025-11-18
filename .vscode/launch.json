@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PracticandoApplication",
+            "request": "launch",
+            "mainClass": "com.example.practicando.examenMañana.PracticandoApplication",
+            "projectName": "practicando"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-GimnasioApplication<com.example-Gimnasio>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -9,6 +16,27 @@
             "projectName": "com.example-Gimnasio",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-DemoApplication<Ejercicios iniciales spring>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "ej4.DemoApplication",
+            "projectName": "Ejercicios iniciales spring",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PracticandoApplication<practicando>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.practicando.PracticandoApplication",
+            "projectName": "practicando",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50964 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=practicando"
         }
     ]
 }

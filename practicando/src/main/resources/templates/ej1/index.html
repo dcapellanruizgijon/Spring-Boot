@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+
+    </head>
+
+    <body>
+        <div th:if="${!arrayTareas.isEmpty()}" th:each="tarea, iiter : ${arrayTareas}">
+            <p th:text="|${tarea.nombre}-${tarea.prioridad}|"></p>
+            <a th:href="@{/verTarea(nombre=${tarea.nombre})}"> Ver Tarea</a>
+        </div>
+
+    </body>
+</html>
