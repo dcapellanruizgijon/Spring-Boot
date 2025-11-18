@@ -16,7 +16,7 @@ public class ExControlador {
 
     @GetMapping("/")
     public String redirigir() {
-        return "login";//a que html voy?
+        return "examenMañana/login";//a que html voy?
         
     }
     
@@ -51,7 +51,7 @@ public class ExControlador {
             mod.addAttribute("nombre", gestor.getLibros());
             mod.addAttribute("autoresContrasena", gestor.getAutorContraseña());//arrayAsociativo(hashmap)
             mod.addAttribute("arrayLibros", gestor.getLibros());//arrayAsociativo(hashmap)
-            return "index";
+            return "examenMañana/index";
         
         
     }
