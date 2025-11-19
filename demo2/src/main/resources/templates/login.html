@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+       
+    </head>
+
+    <body>
+        <h1>Bienvenido a nuestra página de hoteles, inserte aquí sus credenciales (solo si usted esadmin o de recepcion)</h1>
+        
+        <hr>
+
+        <h4 th:if="${errorLogin}" th:text="${errorLogin}"></h4>
+
+        <form th:action="@{/login}" method="post">
+            <p>Inserte su nombre de usuario <input type="text" name="nombre" required></p>
+            <p>Inserte su contraseña<input type="text" name="contrasena" required></p>
+            <p><input type="submit" value="Confirmar"></p>
+        </form>
+    </body>
+</html>

@@ -1,5 +1,7 @@
 package com.example.practicando.ej3;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
-public class ExControlador {
+public class ExControlador implements SesionFinalizable{
 
     @GetMapping("/")
     public String redirigir() {
@@ -110,8 +112,23 @@ public class ExControlador {
     }
     
 
+    @GetMapping("/cerrarSesion")
+    public void cerrar(HttpSession sesion, HttpServletResponse resp) {
+        cerrarSesion(sesion, resp);
+    }
     
+    @Override
+    public void cerrarSesion(HttpSession sesion, HttpServletResponse resp) {
+        sesion.invalidate();//elimina todas las sesiones
 
+        //Si no usamos try esto da error ya que, puede fallar porque como es una respuesta HTTP java obliga a manejarlo
+        try{
+            resp.sendRedirect("/");//redirige al login
+        }catch(Exception e){
+            e.printStackTrace();//maneja errores si los hay
+        }
+        
+    }
 
     
 }
