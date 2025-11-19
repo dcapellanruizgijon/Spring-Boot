@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <style>
+            table{
+                border-collapse: collapse;
+                width: 700px;
+                height: 700px;
+            }
+            td, tr{
+                border: 2px solid black;
+            }
+            form{
+                display: inline;
+            }
+            img{
+                width: 100%;
+                height: 100%;
+            }
+            
+        </style>
+    </head>
+
+    <body>
+        <h1 style="color: blue;">Listado de ordenadores</h1>
+
+        <hr>
+
+        <h2>total segundos desde la ultima visita</h2>
+        <h2>La cookie de arriba se eliminará al llegar a 10000$</h2>
+
+        <hr>
+        
+        <a th:href="@{/eliminaCookie}">Eliminar cookie</a>
+        <a th:href="@{/nuevoOrdenador}">agregar ordenador</a>
+        <a th:href="@{/resumen}">Ver resumen</a>
+
+        <hr>
+        <h3>Listado de laptops</h3>
+        <table>
+            <tr>
+                <td><strong>ID</strong></td>
+                <td><strong>Precio</strong></td>
+                <td><strong>Periférico de regalo</strong></td>
+                <td><strong>Imagen</strong></td>
+            </tr>
+            <tr th:each="laptop : ${listaLaptops}">
+                <td th:text="${laptop.id}"></td>
+                <td th:text="${laptop.Precio}"></td>
+                <td th:text="${laptop.perifericoDeRegalo}"></td>
+                <td><img src="th:text='${laptop.imagePath}'" alt="portatil"></td>
+            </tr>
+        </table>th
+
+        <hr>
+        <h3>Listado de pc</h3>
+        <table>
+            <tr>
+                <td><strong>ID</strong></td>
+                <td><strong>Precio</strong></td>
+                <td><strong>Periférico de regalo</strong></td>
+                <td><strong>Imagen</strong></td>
+            </tr>
+            <tr th:each="pc : ${listaPcs}">
+                <td th:text="${pc.id}"></td>
+                <td th:text="${pc.Precio}"></td>
+                <td th:text="${pc.perifericoDeRegalo}"></td>
+                <td><img src="th:text='${pc.imagePath}'" alt="portatil"></td>
+            </tr>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        ...
+    </head>
+
+    <body>
+        <h1 style="color: blue;">Añadir nuevo ordenador</h1>
+<hr>
+
+        <h3>Añadir un laptop</h3>
+        <form th:action="@{/nuevaLaptop}" method="post">
+            <p>ID* <input type="text" name="id" required></p>
+            <p>precio* <input type="Number" name="precio" required></p>
+            <p>se elegirá un reagalo al azar</p>
+            <input type="submit" value="Añadir Laptop">
+        </form>
+
+        <h3>Añadir un PC</h3>
+        <form th:action="@{/nuevaPc}" method="post">
+            <p>ID* <input type="text" name="id" required></p>
+            <p>precio* <input type="Number" name="precio" required></p>
+            <p>se elegirá un reagalo al azar</p>
+            <input type="submit" value="Añadir PC">
+        </form>
+
+        <a th:href="@{/}">Volver</a>
+
+
+    </body>
+</html>
