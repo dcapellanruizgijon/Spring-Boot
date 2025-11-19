@@ -1,4 +1,4 @@
-package com.example.practicando.examenMañana;
+package com.example.practicando.ej3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,17 +37,15 @@ public class GestorLibros {
     }
 
 
-
-
     public void addLibro(Libro l){
         libros.add(l);
     }
 
 
-    public boolean esRepetido(String nuevoIsbn){
+    public boolean esISBNRepetido(int nuevoIsbn){
         boolean respuesta=false;
         for(Libro libro:libros){
-            if(libro.getIsbn().equals(nuevoIsbn)){
+            if(libro.getIsbn()==nuevoIsbn){
                 respuesta=true;
             }
         }
@@ -62,6 +60,21 @@ public class GestorLibros {
 
     public boolean estaVacio(){
         if(libros.isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean cumpleCondicion(){
+        int contador=0;
+        for(Libro l : libros){
+            if (l.getPrecio()>=10 && l.getTitulo().length()>=10) {
+                contador++;
+            }
+        }
+
+        if(contador>=5){
             return true;
         }else{
             return false;

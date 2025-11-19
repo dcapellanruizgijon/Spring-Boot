@@ -1,4 +1,4 @@
-package com.example.practicando.examenMañana;
+package com.example.practicando.ej3;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ public class Libro {
     private String titulo;
     private String autor;
     private int precio;
-    private String isbn; 
+    private int isbn; 
 
     public boolean precioValido(int pre){
         if(pre>4 && pre<20){

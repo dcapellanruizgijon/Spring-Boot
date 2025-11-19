@@ -114,6 +114,9 @@ public class ControladorRutinas {
             //enviamos la cookie al servidor para que sea almacenada(gracias al objeto HttpServletResponse)
             //IMPORTANTE: httpServletResponse es un objeto que lleva contenido al cliente (como el model) IMPPORTANTE: La diferencia es que model se usa para thymeleaf(cosas que van a la plantilla html) y el httpServletResponse se usa en cookies para configurar la respuesta misma
             response.addCookie(cookie);
+
+            //por ejemplo podemos usarlo para errores
+            //response.sendError(404, "pagina no encontrada");
         }
         
         return "redirect:/";

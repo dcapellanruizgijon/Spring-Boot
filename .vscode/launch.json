@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PracticandoApplication",
+            "request": "launch",
+            "mainClass": "com.example.practicando.ej3.PracticandoApplication",
+            "projectName": "practicando"
+        },
+        {
+            "type": "java",
             "name": "DemoApplication",
             "request": "launch",
             "mainClass": "com.example.demo.DemoApplication",

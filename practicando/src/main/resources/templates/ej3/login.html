@@ -6,8 +6,12 @@
 
     <body>
         <h2>Inserte su nombre</h2>
-        <form action="/entrar" method="post">
+
+        <h4 th:if="${mensaje}" th:text="${mensaje}" style="color: red;"></h4>
+
+        <form th:action="@{/login}" method="post">
             nombre del autor: <input type="text" name="nom" required>
             <input type="submit"  value="Entrar">
+        </form>
     </body>
 </html>
