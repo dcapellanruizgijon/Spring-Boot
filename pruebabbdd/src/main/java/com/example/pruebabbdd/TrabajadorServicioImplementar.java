@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrabajadorServicioImplementar implements TrabajadorServicio {
 
-    @Autowired
-    private TrabajadorRepository repositorio;
+    @Autowired//inyeccion de dependencias automatica (para que se oculten los datos y no se vean en la consola)
+    private TrabajadorRepository repositorio;//implementamos la interfaz Trabajadorservicio
 
     @Override
     public List<Trabajador> listarTrabajador() {
