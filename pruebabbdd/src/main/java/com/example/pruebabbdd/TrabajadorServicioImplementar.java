@@ -5,12 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+//en esta clase implementamos los metodos de la interfaz TrabajadorServicio
+
 @Service
 public class TrabajadorServicioImplementar implements TrabajadorServicio {
 
-    @Autowired//inyeccion de dependencias automatica (para que se oculten los datos y no se vean en la consola)
-    private TrabajadorRepository repositorio;//implementamos la interfaz Trabajadorservicio
+    @Autowired//sirve para inyectar alguna dependencia
+    private TrabajadorRepository repositorio;//"importamos" la interfaz TrabajadorRepository (que tiene un monton de métodos)
 
+
+//Y aqui implementamos algunos de estos metodos para poder usarlos
+    
     @Override
     public List<Trabajador> listarTrabajador() {
 

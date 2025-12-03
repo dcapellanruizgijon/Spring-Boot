@@ -2,7 +2,7 @@ package com.example.pruebabbdd;
 
 import java.util.List;
 
-//En esta interfaz definimos que se puede hacer y como
+//En esta interfaz definimos que se puede hacer y como (metodos extra)
 public interface TrabajadorServicio {
 
     //podemos listar todos los trabajadores

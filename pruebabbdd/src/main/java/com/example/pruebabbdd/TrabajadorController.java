@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class TrabajadorController {
 
-    @Autowired
-    private TrabajadorServicio servicio;
+    @Autowired//sirve para inyectar una dependencia
+    private TrabajadorServicio servicio;//en este caso "importamos la clase TrabajadorServicio (dentro de esa clase hay otro autowired que importa una interfaz)"
 
     @GetMapping({ "/trabajadores", "/" })
     public String listarTrabajadores(Model modelo) {

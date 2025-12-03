@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 /* PARA QUE ESTO FUNCIONE TIENE QUE ESTAR YA CREADA LA TABLA "trabajadores" */
 
 @Entity//le dice a hibernate/JPA que esta clase es una tabla de una bbdd
-@Table(name = "trabajadores")//especifica el nombre de la tabla en la bbdd
+@Table(name = "trabajadores")//especifica el nombre de la tabla en la bbdd(alias) se va a crear con este nombre la bbdd
 public class Trabajador {
     
     @Id//marca este atributo como clave primaria de la tabla
