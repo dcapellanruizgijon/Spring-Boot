@@ -26,12 +26,12 @@ public class controlador {
 		
 		model.addAttribute("anuncios", anuncios);//la primera vez estará vacio
 		
-		return "ej4/index";
+		return "index";
 	}
 	
 	@GetMapping("/dirigeNuevoAnuncio")
 	public String irFormulario() {
-		return "ej4/nuevoAnuncio";
+		return "nuevoAnuncio";
 	}
 	
 	@PostMapping("/nuevoAnuncio")
@@ -58,7 +58,7 @@ public class controlador {
 			}
 		}
 
-		return "ej4/anuncio";
+		return "anuncio";
 
 	}
 
