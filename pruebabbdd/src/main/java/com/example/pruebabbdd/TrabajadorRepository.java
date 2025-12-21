@@ -2,7 +2,7 @@ package com.example.pruebabbdd;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
+//El repository es la capa que habla con la base de datos.
 @Repository//Marca esta interfaz como un componente de persistencia de Spring
 public interface TrabajadorRepository extends JpaRepository<Trabajador, Integer> {  //JpaRepository se pone siempre.  
                                                                                     //El primer prametro es el objeto con el que trabajará el repositorio ==> Trabajador

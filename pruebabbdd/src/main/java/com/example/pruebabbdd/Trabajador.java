@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 /* PARA QUE ESTO FUNCIONE TIENE QUE ESTAR YA CREADA LA TABLA "trabajadores" */
 
-@Entity//le dice a hibernate/JPA que esta clase es una tabla de una bbdd
+@Entity//le dice a hibernate/JPA que esta clase es una tabla o entidad de una bbdd
 @Table(name = "trabajadores")//especifica el nombre de la tabla en la bbdd(alias) se va a crear con este nombre la bbdd
 public class Trabajador {
     
@@ -23,7 +23,7 @@ public class Trabajador {
     @Column(name = "nombre")//nombre de la columna de la base de datos
     private String nombre;
 
-    @Column(name = "apellidos")
+    @Column(name = "apellidos")//PARA QUE NO SEA OBLIGATORIO INSERTARLO==> pondriamos @Column(name = "nombre_columna", nullable = false)
     private String apellidos;
 
     @Column(name = "telefono")

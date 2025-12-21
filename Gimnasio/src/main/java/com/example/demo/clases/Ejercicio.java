@@ -1,4 +1,4 @@
-package clases;
+package com.example.demo.clases;
 
 public class Ejercicio {
     private String nombre;

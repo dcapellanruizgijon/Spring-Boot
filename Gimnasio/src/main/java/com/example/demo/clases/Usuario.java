@@ -1,14 +1,35 @@
-package clases;
+package com.example.demo.clases;
 
 import java.util.ArrayList;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="usuarios")
 public class Usuario implements OperacionesSalud{
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@Column
 	private String nombre;
+	@Column
     private String contrasena;
+	@Column
     private int edad;
+	@Column
     private double peso;
+	@Column
     private double altura;
+	
+	@OneToMany(mappedBy = "u")//nombre del atributo en la clase Rutina que apunta a departamento
     private ArrayList<Rutina> rutinas;
     
     public Usuario(String nombre, String contrasena, int edad, double peso, double altura) {
@@ -19,6 +40,19 @@ public class Usuario implements OperacionesSalud{
         this.altura = altura;
         this.rutinas = new ArrayList<>();
     }
+	//estet constructor es para cuando rescatemos un usuario de la bbdd ya que nos vendrá con su id
+	public Usuario(Integer id,String nombre, String contrasena, int edad, double peso, double altura) {
+		this.id=id;
+		this.nombre = nombre;
+        this.contrasena = contrasena;
+        this.edad = edad;
+        this.peso = peso;
+        this.altura = altura;
+        this.rutinas = new ArrayList<>();
+    }
+	public Usuario(){
+		
+	}
 
 	public String getNombre() {
 		return nombre;
@@ -81,20 +115,20 @@ public class Usuario implements OperacionesSalud{
 	//para calcular el indice de masa corporal
 	public double calculaIndiceMasaCorporal() {
 	    // Validar que peso y altura sean valores positivos
-	    if (peso <= 0) {
+	    if (this.peso <= 0) {
 	        throw new IllegalArgumentException("El peso debe ser un valor positivo");
 	    }
-	    if (altura <= 0) {
+	    if (this.altura <= 0) {
 	        throw new IllegalArgumentException("La altura debe ser un valor positivo");
 	    }
 	    
 	    // Validar que la altura no sea demasiado pequeña (mínimo 30 cm)
-	    if (altura < 30) {
+	    if (this.altura < 30) {
 	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy pequeña)");
 	    }
 	    
 	    // Validar que la altura no sea demasiado grande (máximo 300 cm)
-	    if (altura > 300) {
+	    if (this.altura > 300) {
 	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy grande)");
 	    }
 	    

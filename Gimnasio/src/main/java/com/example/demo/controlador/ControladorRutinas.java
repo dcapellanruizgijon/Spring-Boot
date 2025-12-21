@@ -1,7 +1,9 @@
-package com.example.demo;
+package com.example.demo.controlador;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import clases.Ejercicio;
-import clases.Rutina;
-import clases.Usuario;
+import com.example.demo.Servicios.UsuarioServicio;
+import com.example.demo.clases.*;
+// import clases.Rutina;
+// import clases.Usuario;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,15 +25,18 @@ public class ControladorRutinas {
 //Nos logueamos como usuario y se guarda la sesion añadimos las rutinas y los ejercicio a un usuario
 //Al cerrar la sesion, se pierde la sesion pero cada usuario mantiene sus rutinas hasta que se cierra el servidor
 	
-    // Array interno para simular base de datos
-    private ArrayList<Usuario> usuarios = new ArrayList<>();
+    // // Array interno para simular base de datos
+    // private ArrayList<Usuario> usuarios = new ArrayList<>();
     
-    // Constructor (se ejecuta al crear el controlador)
-    public ControladorRutinas() {
-        // Usuarios de prueba
-        usuarios.add(new Usuario("Diego", "1234", 19, 80, 180));
-        usuarios.add(new Usuario("carlos", "abcd", 22, 73, 160));
-    }
+    // // Constructor (se ejecuta al crear el controlador)
+    // public ControladorRutinas() {
+    //     // Usuarios de prueba
+    //     usuarios.add(new Usuario("Diego", "1234", 19, 80, 180));
+    //     usuarios.add(new Usuario("carlos", "abcd", 22, 73, 160));
+    // }
+
+    @Autowired
+    private UsuarioServicio servicio;
     
     // Página principal - si no hay usuario va al login
     @GetMapping("/")
@@ -69,7 +75,7 @@ public class ControladorRutinas {
     // Procesar el formulario de login
     @PostMapping("/login")
     public String procesarLogin(HttpSession session, Model model, @RequestParam String nom, @RequestParam String cont) {
-        
+        List<Usuario> usuarios=servicio.listarUsuarios();
         // Buscar usuario en el array
         for (Usuario usuario : usuarios) {
             if (usuario.getNombre().equals(nom) && usuario.getContrasena().equals(cont)) {
@@ -105,7 +111,7 @@ public class ControladorRutinas {
       //si hay un usuario le añadimos la rutina al usuario
         if (usuario != null) {
         	
-            usuario.agregarRutina(new Rutina(nombre));
+            usuario.agregarRutina(new Rutina(nombre, usuario));
             
             //como esta va a pasar a ser la ultima rutina la vamos a guardar en una cookie para mantenerla
             Cookie cookie = new Cookie("ultimaRutina", nombre);
@@ -152,4 +158,17 @@ public class ControladorRutinas {
         response.addCookie(cookie);
         return "redirect:/";
     }
+
+    @PostMapping("/registro")
+    public String nuevoRegistro(HttpSession sesion, @RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
+        //asi se parsea un string
+        int ed=Integer.parseInt(edad);
+        int pes=Integer.parseInt(peso);
+        int alt=Integer.parseInt(edad);
+        Usuario u=new Usuario(nom,cont, ed, pes, alt);
+
+        sesion.setAttribute("usuario", u);
+        return "redirect:/";
+    }
+
 }

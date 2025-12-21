@@ -1,0 +1,17 @@
+package com.example.demo.Servicios;
+
+import java.util.List;
+
+import com.example.demo.clases.Usuario;
+
+public interface UsuarioServicio {
+    public List<Usuario> listarUsuarios();
+
+    public Usuario guardarTrabajador(Usuario t);
+
+    public Usuario obtenerUsuario(Integer id);
+
+    public Usuario actualizarUsuario(Usuario trabajador);
+
+    public void borrarUsuario(Integer id);
+}
