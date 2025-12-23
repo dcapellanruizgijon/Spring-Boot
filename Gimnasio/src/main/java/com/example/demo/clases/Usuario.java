@@ -1,6 +1,7 @@
 package com.example.demo.clases;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +31,7 @@ public class Usuario implements OperacionesSalud{
     private double altura;
 	
 	@OneToMany(mappedBy = "u")//nombre del atributo en la clase Rutina que apunta a departamento
-    private ArrayList<Rutina> rutinas;
+    private List<Rutina> rutinas;
     
     public Usuario(String nombre, String contrasena, int edad, double peso, double altura) {
         this.nombre = nombre;
@@ -95,11 +96,11 @@ public class Usuario implements OperacionesSalud{
 	}
 
 	//lo uso en el método de agregar ejercicio del controlador
-	public ArrayList<Rutina> getRutinas() {
-		return rutinas;
+	public List<Rutina> getRutinas() {
+		return this.rutinas;
 	}
 	
-	public void setRutinas(ArrayList<Rutina> rutinas) {
+	public void setRutinas(List<Rutina> rutinas) {
 		this.rutinas = rutinas;
 	}
 	
@@ -115,25 +116,24 @@ public class Usuario implements OperacionesSalud{
 	//para calcular el indice de masa corporal
 	public double calculaIndiceMasaCorporal() {
 	    // Validar que peso y altura sean valores positivos
+		System.out.println("Altura:"+ this.altura);
+		System.out.println("peso:"+ this.peso);
 	    if (this.peso <= 0) {
 	        throw new IllegalArgumentException("El peso debe ser un valor positivo");
 	    }
-	    if (this.altura <= 0) {
-	        throw new IllegalArgumentException("La altura debe ser un valor positivo");
-	    }
 	    
 	    // Validar que la altura no sea demasiado pequeña (mínimo 30 cm)
-	    if (this.altura < 30) {
+	    if (this.altura <= 30) {
 	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy pequeña)");
 	    }
 	    
 	    // Validar que la altura no sea demasiado grande (máximo 300 cm)
-	    if (this.altura > 300) {
+	    if (this.altura >= 300) {
 	        throw new IllegalArgumentException("La altura parece ser incorrecta (muy grande)");
 	    }
 	    
-	    double alturaEnMetros = altura / 100;
-	    return peso / (alturaEnMetros * alturaEnMetros);
+	    double alturaEnMetros = this.altura / 100;
+	    return this.peso / (alturaEnMetros * alturaEnMetros);
 	}
 	
 	

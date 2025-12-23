@@ -163,11 +163,15 @@ public class ControladorRutinas {
     public String nuevoRegistro(HttpSession sesion, @RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
         //asi se parsea un string
         int ed=Integer.parseInt(edad);
-        int pes=Integer.parseInt(peso);
-        int alt=Integer.parseInt(edad);
-        Usuario u=new Usuario(nom,cont, ed, pes, alt);
+        double pes=Double.parseDouble(peso);
+        double alt=Double.parseDouble(altura);
+        System.out.println("edad: "+ed);
+        System.out.println("peso: "+pes);
+        System.out.println("altura: "+alt);
+        Usuario u=new Usuario(nom, cont, ed, pes, alt);
 
         sesion.setAttribute("usuario", u);
+        servicio.guardarTrabajador(u);
         return "redirect:/";
     }
 
