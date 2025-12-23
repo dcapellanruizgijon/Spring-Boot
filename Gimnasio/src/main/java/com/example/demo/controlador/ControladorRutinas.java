@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.Repositorios.RutinaRepository;
+import com.example.demo.Servicios.RutinaServicio;
 import com.example.demo.Servicios.UsuarioServicio;
 import com.example.demo.clases.*;
 // import clases.Rutina;
@@ -36,7 +38,9 @@ public class ControladorRutinas {
     // }
 
     @Autowired
-    private UsuarioServicio servicio;
+    private UsuarioServicio servicioUsuario;
+    @Autowired
+    private RutinaServicio servicioRutina;
     
     // Página principal - si no hay usuario va al login
     @GetMapping("/")
@@ -75,15 +79,19 @@ public class ControladorRutinas {
     // Procesar el formulario de login
     @PostMapping("/login")
     public String procesarLogin(HttpSession session, Model model, @RequestParam String nom, @RequestParam String cont) {
-        List<Usuario> usuarios=servicio.listarUsuarios();
+        List<Usuario> usuarios=servicioUsuario.listarUsuarios();
         // Buscar usuario en el array
+        
         for (Usuario usuario : usuarios) {
+
             if (usuario.getNombre().equals(nom) && usuario.getContrasena().equals(cont)) {
+
+                
                 // Usuario encontrado - guardar en sesión
                 session.setAttribute("usuario", usuario);
                 return "redirect:/";  // Redirigir a la página principal
             }
-        }
+        }   
         
         // Si no encuentra usuario, mostrar error
         model.addAttribute("error", "Usuario o contraseña incorrectos");
@@ -110,8 +118,8 @@ public class ControladorRutinas {
         
       //si hay un usuario le añadimos la rutina al usuario
         if (usuario != null) {
-        	
-            usuario.agregarRutina(new Rutina(nombre, usuario));
+        	Rutina r=new Rutina(nombre, usuario);
+            usuario.agregarRutina(r);
             
             //como esta va a pasar a ser la ultima rutina la vamos a guardar en una cookie para mantenerla
             Cookie cookie = new Cookie("ultimaRutina", nombre);
@@ -121,8 +129,10 @@ public class ControladorRutinas {
             //IMPORTANTE: httpServletResponse es un objeto que lleva contenido al cliente (como el model) IMPPORTANTE: La diferencia es que model se usa para thymeleaf(cosas que van a la plantilla html) y el httpServletResponse se usa en cookies para configurar la respuesta misma
             response.addCookie(cookie);
 
-            //por ejemplo podemos usarlo para errores
-            //response.sendError(404, "pagina no encontrada");
+            
+
+            //GUARDAMOS LA RUTINA EN LA BBDD
+            servicioRutina.guardarRutina(r);
         }
         
         return "redirect:/";
@@ -171,7 +181,7 @@ public class ControladorRutinas {
         Usuario u=new Usuario(nom, cont, ed, pes, alt);
 
         sesion.setAttribute("usuario", u);
-        servicio.guardarTrabajador(u);
+        servicioUsuario.guardarTrabajador(u);
         return "redirect:/";
     }
 
