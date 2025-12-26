@@ -3,6 +3,7 @@ package com.example.demo.Servicios;
 import java.util.List;
 
 import com.example.demo.clases.Rutina;
+import com.example.demo.clases.Usuario;
 
 public interface RutinaServicio {
     public List<Rutina> listarTodasLasRutinas();
@@ -11,5 +12,6 @@ public interface RutinaServicio {
 
     public void borrarRutina(Integer id);
     
+    // public List<Rutina> rutinasDelUsuario(Usuario u);
 
 }

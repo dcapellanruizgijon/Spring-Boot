@@ -2,6 +2,7 @@ package com.example.demo.Servicios;
 
 import java.util.List;
 
+import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
 
 public interface UsuarioServicio {

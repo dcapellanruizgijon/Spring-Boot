@@ -3,6 +3,7 @@ package com.example.demo.controlador;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -86,7 +87,10 @@ public class ControladorRutinas {
 
             if (usuario.getNombre().equals(nom) && usuario.getContrasena().equals(cont)) {
 
-                
+                //para que se carguen tambien las rutinas de la bbdd(hibernate sabe que rutinas corresponden a cada usuario gracias a las claves)
+                //SIN HACER ESTO NO FUNCIONA YA QUE NO RESCATARIA LAS RUTINAS DE LA BBDD
+                Hibernate.initialize(usuario.getRutinas());
+
                 // Usuario encontrado - guardar en sesión
                 session.setAttribute("usuario", usuario);
                 return "redirect:/";  // Redirigir a la página principal

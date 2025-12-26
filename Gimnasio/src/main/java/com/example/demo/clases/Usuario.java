@@ -54,6 +54,11 @@ public class Usuario implements OperacionesSalud{
 	public Usuario(){
 		
 	}
+	
+	public Integer getId(){
+		return this.id;
+	}
+	
 
 	public String getNombre() {
 		return nombre;
