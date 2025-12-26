@@ -1,5 +1,6 @@
 package com.example.demo.controlador;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,13 +60,20 @@ public class ControladorRutinas {
         //para controlar lo que pasa si aun no hubiera ultimaRutina(si el default value es empty("")
         if (ultimaRutina.isEmpty()) {
             ultimaRutina = "Nombre de la rutina no está disponible";
+        }else{
+            //para manejar el utlimo usuario que creo alguna rutina
+            String[] usuarioRutina =ultimaRutina.split("-");
+            // for (String s : usuarioRutina) {
+            //     System.out.println("DATOOOOOO:"+s);
+            // }
+            ultimaRutina="La ultima rutina creada por alguien en la aplicación se llamó: "+usuarioRutina[1]+" y fue creada por el usuario: "+usuarioRutina[0];
         }
-        
-        
-        
-        // Si hay usuario, pasar datos al modelo y mostrar la pagina index
-        model.addAttribute("usuario", usuario);
+
+
         model.addAttribute("ultimaRutina", ultimaRutina);
+        // Si hay usuario actual, pasar datos al modelo y mostrar la pagina index
+        model.addAttribute("usuario", usuario);
+
         return "index";
     }
     
@@ -126,7 +134,10 @@ public class ControladorRutinas {
             usuario.agregarRutina(r);
             
             //como esta va a pasar a ser la ultima rutina la vamos a guardar en una cookie para mantenerla
-            Cookie cookie = new Cookie("ultimaRutina", nombre);
+            //las cookies no pueden tener  espacios ni , asi que le he puesto un "-"
+            String usuarioYrutina=usuario.getNombre()+"-"+r.getNombre();
+            System.out.println("usuario y rutina:"+usuarioYrutina);
+            Cookie cookie = new Cookie("ultimaRutina", usuarioYrutina);
             cookie.setMaxAge(3 * 24 * 3600);
             
             //enviamos la cookie al servidor para que sea almacenada(gracias al objeto HttpServletResponse)

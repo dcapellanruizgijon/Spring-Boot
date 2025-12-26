@@ -11,7 +11,7 @@ import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
 
 @Service
-public class RuitinaServicioImplementacion implements RutinaServicio{
+public class RutinaServicioImplementacion implements RutinaServicio{
 
     @Autowired
     private RutinaRepository repoRu;
