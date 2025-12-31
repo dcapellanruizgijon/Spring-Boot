@@ -1,13 +1,40 @@
 package com.example.demo.clases;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "ejercicios")
 public class Ejercicio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column
     private String nombre;
-    private boolean completado;
     
-    public Ejercicio(String nombre) {
+    @Column
+    private boolean completado;
+
+    @ManyToOne
+    @JoinColumn(name = "rutina_id")//nombre que se le dará a la columna
+    private Rutina r;
+    
+    public Ejercicio(String nombre, Rutina r) {
         this.nombre = nombre;
         this.completado = false;
+        this.r=r;
     }
+    public Ejercicio(){
+
+    }
+    
 
     // Getters y Setters
     public String getNombre() {
@@ -25,4 +52,6 @@ public class Ejercicio {
     public void setCompletado(boolean completado) {
         this.completado = completado;
     }
+
+    
 }

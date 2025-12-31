@@ -155,12 +155,21 @@
                 <div class="rutina-container">
                     <h3 th:text="${rutina.nombre}"></h3>
                     
-                    <!-- Formulario para agregar ejercicio a esta rutina específica -->
-                    <form action="/agregar-ejercicio" method="post">
-                        <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}"><!--rutinaStatus.index devuelve el indice de la rutina actual en el arrayList de rutinas-->
-                        <input type="text" name="nombreEjercicio" required>
-                        <button type="submit" style="background: #FF9800;">Agregar Ejercicio</button>
-                    </form>
+                    <div style="display: flex;">
+                        <!-- Formulario para agregar ejercicio a esta rutina específica -->
+                        <form action="/agregar-ejercicio" method="post">
+                            <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}"><!--rutinaStatus.index devuelve el indice de la rutina actual en el arrayList de rutinas-->
+                            <input type="text" name="nombreEjercicio" required>
+                            <button type="submit" style="background: #FF9800;">Agregar Ejercicio</button>
+                            
+                        </form>
+                        <form action="/eliminarRutina" method="post">
+                            <input type="hidden" name="rutinaId" th:value="${rutina.id}">
+                            <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
+                            <button type="submit" style="background: #c9363d;">Eliminar Rutina</button>
+                        </form>
+                    </div>
+                    
                     
 					
                     <!-- Si la rutina aun no tiene ejercicio muestra este div-->

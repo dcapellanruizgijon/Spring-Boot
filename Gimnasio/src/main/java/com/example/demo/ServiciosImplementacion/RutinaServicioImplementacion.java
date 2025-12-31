@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Repositorios.RutinaRepository;
 import com.example.demo.Servicios.RutinaServicio;
+import com.example.demo.clases.Ejercicio;
 import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
 
@@ -29,10 +30,11 @@ public class RutinaServicioImplementacion implements RutinaServicio{
     @Override
     public void borrarRutina(Integer id) {
         repoRu.deleteById(id);
+        
     }
 
     
-
+    
     
 
 

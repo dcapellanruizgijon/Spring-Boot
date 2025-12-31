@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.Repositorios.RutinaRepository;
+import com.example.demo.Servicios.EjercicioServicio;
 import com.example.demo.Servicios.RutinaServicio;
 import com.example.demo.Servicios.UsuarioServicio;
 import com.example.demo.clases.*;
@@ -26,23 +27,12 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ControladorRutinas {
 
-//Nos logueamos como usuario y se guarda la sesion añadimos las rutinas y los ejercicio a un usuario
-//Al cerrar la sesion, se pierde la sesion pero cada usuario mantiene sus rutinas hasta que se cierra el servidor
-	
-    // // Array interno para simular base de datos
-    // private ArrayList<Usuario> usuarios = new ArrayList<>();
-    
-    // // Constructor (se ejecuta al crear el controlador)
-    // public ControladorRutinas() {
-    //     // Usuarios de prueba
-    //     usuarios.add(new Usuario("Diego", "1234", 19, 80, 180));
-    //     usuarios.add(new Usuario("carlos", "abcd", 22, 73, 160));
-    // }
-
     @Autowired
     private UsuarioServicio servicioUsuario;
     @Autowired
     private RutinaServicio servicioRutina;
+    @Autowired 
+    private EjercicioServicio servicioEjercicio;
     
     // Página principal - si no hay usuario va al login
     @GetMapping("/")
@@ -70,6 +60,7 @@ public class ControladorRutinas {
         }
 
 
+        //IMPORTANTE NO INCLUIRLO EN EL IF NI EL ELSE
         model.addAttribute("ultimaRutina", ultimaRutina);
         // Si hay usuario actual, pasar datos al modelo y mostrar la pagina index
         model.addAttribute("usuario", usuario);
@@ -98,16 +89,38 @@ public class ControladorRutinas {
                 //para que se carguen tambien las rutinas de la bbdd(hibernate sabe que rutinas corresponden a cada usuario gracias a las claves)
                 //SIN HACER ESTO NO FUNCIONA YA QUE NO RESCATARIA LAS RUTINAS DE LA BBDD
                 Hibernate.initialize(usuario.getRutinas());
+                // También inicializar los ejercicios de cada rutina
+                if (usuario.getRutinas() != null) {
+                    for (Rutina rutina : usuario.getRutinas()) {
+                        Hibernate.initialize(rutina.getEjercicios());
+                    }
+                }
 
                 // Usuario encontrado - guardar en sesión
                 session.setAttribute("usuario", usuario);
                 return "redirect:/";  // Redirigir a la página principal
             }
         }   
-        
+
         // Si no encuentra usuario, mostrar error
         model.addAttribute("error", "Usuario o contraseña incorrectos");
         return "login";
+    }
+
+    @PostMapping("/registro")
+    public String nuevoRegistro(HttpSession sesion, @RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
+        //asi se parsea un string
+        int ed=Integer.parseInt(edad);
+        double pes=Double.parseDouble(peso);
+        double alt=Double.parseDouble(altura);
+        System.out.println("edad: "+ed);
+        System.out.println("peso: "+pes);
+        System.out.println("altura: "+alt);
+        Usuario u=new Usuario(nom, cont, ed, pes, alt);
+
+        sesion.setAttribute("usuario", u);
+        servicioUsuario.guardarTrabajador(u);
+        return "redirect:/";
     }
 
     // Cerrar sesión
@@ -152,7 +165,17 @@ public class ControladorRutinas {
         
         return "redirect:/";
     }
-    
+
+    @PostMapping("/eliminarRutina")
+    public String eliminaRutina(@RequestParam int rutinaId, @RequestParam int rutinaIndex, HttpSession sesion){
+        System.out.println("Indice de la rutina: "+rutinaId);
+        Usuario u=(Usuario) sesion.getAttribute("usuario");
+
+        servicioRutina.borrarRutina(rutinaId);
+        u.getRutinas().remove(rutinaIndex);
+
+        return "redirect:/";
+    }
     
 
     // Agregar ejercicio a rutina
@@ -167,8 +190,13 @@ public class ControladorRutinas {
         	
         		//creamos una rutina y le damos el valor de getRutinas que es un array de todas las rutinas Y USAMOS .GET(RUTINAinDEX) PARA DECIRLE DE ESE ARRAY QUE RUTINA ES LA QUE BUSCO
             Rutina rutina = usuario.getRutinas().get(rutinaIndex);
+
             //agregamos el ejercicio (dandole el nombre que nos viene desde el formulario de /agregar-ejercicio
-            rutina.agregarEjercicio(new Ejercicio(nombreEjercicio));
+            Ejercicio ej=new Ejercicio(nombreEjercicio, rutina);
+            servicioEjercicio.guardarEjercicio(ej);//guardamos el ejercicio en la bbdd
+            rutina.agregarEjercicio(ej);//guardamos el ejercicio en el array de ejercicios de la clase rutina
+
+            
         }
         return "redirect:/";
     }
@@ -184,20 +212,6 @@ public class ControladorRutinas {
         return "redirect:/";
     }
 
-    @PostMapping("/registro")
-    public String nuevoRegistro(HttpSession sesion, @RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
-        //asi se parsea un string
-        int ed=Integer.parseInt(edad);
-        double pes=Double.parseDouble(peso);
-        double alt=Double.parseDouble(altura);
-        System.out.println("edad: "+ed);
-        System.out.println("peso: "+pes);
-        System.out.println("altura: "+alt);
-        Usuario u=new Usuario(nom, cont, ed, pes, alt);
-
-        sesion.setAttribute("usuario", u);
-        servicioUsuario.guardarTrabajador(u);
-        return "redirect:/";
-    }
+    
 
 }
