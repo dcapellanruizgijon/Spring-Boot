@@ -8,6 +8,8 @@ import com.example.demo.clases.Usuario;
 public interface UsuarioServicio {
     public List<Usuario> listarUsuarios();
 
+    public Usuario traerUsuario(Integer idUsuario);
+
     public Usuario guardarTrabajador(Usuario t);
 
     public Usuario obtenerUsuario(Integer id);

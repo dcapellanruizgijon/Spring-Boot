@@ -194,9 +194,36 @@ public class ControladorRutinas {
             //agregamos el ejercicio (dandole el nombre que nos viene desde el formulario de /agregar-ejercicio
             Ejercicio ej=new Ejercicio(nombreEjercicio, rutina);
             servicioEjercicio.guardarEjercicio(ej);//guardamos el ejercicio en la bbdd
+            //MUY IMPORTANTE: al hacer esto, JPA automaticamente actualiza el objeto para que podamos acceder tambien a su id :
+        
             rutina.agregarEjercicio(ej);//guardamos el ejercicio en el array de ejercicios de la clase rutina
 
             
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/cambiarEstado")
+    public String cambiarEstadoEjercicio(@RequestParam Integer idEjercicio, HttpSession sesion){
+
+        Ejercicio ejercicio=servicioEjercicio.traerEjercicio(idEjercicio);
+        ejercicio.setCompletado();
+        System.out.println("Ejercicio completado?:"+ejercicio.isCompletado());
+        servicioEjercicio.guardarEjercicio(ejercicio);
+
+        //actualizamos el usuario de la sesion (ES MEJOR HACERLO AQUI EN VEZ DE EN POSTMAPPING DE"/" YA QUE ASI SOLO REFRESCAMOS CUANDO HAY UN CAMBIO EN VEZ DE SIEMPRE QUE SE RECARGUE LA PÁGINA):
+        Usuario usuario = (Usuario) sesion.getAttribute("usuario");
+        if (usuario != null) {
+            // Traer usuario fresco desde BD
+            Usuario usuarioActualizado = servicioUsuario.traerUsuario(usuario.getId());
+
+            // Inicializamos las rutinas y los ejercicios en hibernate
+            Hibernate.initialize(usuarioActualizado.getRutinas());
+            for (Rutina rutina : usuarioActualizado.getRutinas()) {
+                Hibernate.initialize(rutina.getEjercicios());
+            }
+            // Actualizar sesión
+            sesion.setAttribute("usuario", usuarioActualizado);
         }
         return "redirect:/";
     }

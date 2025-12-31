@@ -34,4 +34,8 @@ public class EjercicioServicioImplementado implements EjercicioServicio{
         return repo.findByRId(id);//explicado en EjercicioRepo
     }
     
+    @Override
+    public Ejercicio traerEjercicio(Integer idEjercicio) {
+        return repo.findById(idEjercicio).get();
+    }
 }

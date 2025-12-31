@@ -41,6 +41,10 @@ public class UsuarioServicioImplementado implements UsuarioServicio{
         repo.deleteById(id);
     }
 
+    @Override
+    public Usuario traerUsuario(Integer idUsuario) {
+        return repo.findById(idUsuario).get();
+    }
     
 } 
 

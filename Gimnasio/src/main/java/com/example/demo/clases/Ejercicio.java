@@ -37,6 +37,10 @@ public class Ejercicio {
     
 
     // Getters y Setters
+    public Integer getId() {
+        return id;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -49,9 +53,17 @@ public class Ejercicio {
         return completado;
     }
 
-    public void setCompletado(boolean completado) {
-        this.completado = completado;
+    public void setCompletado() {
+        if (this.completado==true) {
+            this.completado=false;
+        }
+        else if(this.completado==false){
+            this.completado=true;
+        }
     }
 
+    public Rutina getR() {
+        return r;
+    }
     
 }

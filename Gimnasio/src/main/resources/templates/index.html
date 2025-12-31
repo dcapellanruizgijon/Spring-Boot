@@ -183,6 +183,10 @@
                         <p>
                             <strong th:text="${ejercicio.nombre}"></strong> - 
                             Estado: <span th:text="${ejercicio.completado} ? 'COMPLETADO' : 'PENDIENTE'"></span><!--Mostramos el estado que por defectos va ser pendiente en todos-->
+                            <form action="/cambiarEstado" method="post">
+                                <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
+                                <input type="submit" value="Cambiar estado">
+                            </form>
                         </p>
                     </div>
                 </div>
