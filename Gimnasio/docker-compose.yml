@@ -1,0 +1,52 @@
+# ARCHIVO: docker-compose.yml  (DEFINIMOS  LA CONFIGURACION PARA EJECUTAR VARIOS CONTENEDORES A LA VEZ)
+
+services:
+  # Tu aplicación Spring Boot
+  gimnasio-app:
+    build: .
+    container_name: app-spring
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    ports:
+      - "8081:8080"  # Mapea el puerto 8081 al 8080 interno
+    # Cargamos las variables del archivo .env
+    env_file:
+      - .env
+    environment:
+      # Mapea variables al formato que Spring espera
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/Gimnasio
+      SPRING_DATASOURCE_USERNAME: UsuarioAdmin
+      SPRING_DATASOURCE_PASSWORD: admin123
+
+  # MariaDB 
+  mariadb:
+    image: mariadb:10.11
+    container_name: app-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-toor}
+      MYSQL_DATABASE: Gimnasio
+      MYSQL_USER: UsuarioAdmin
+      MYSQL_PASSWORD: admin123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: app-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 128M
+    ports:
+      - "8082:80"
+
+volumes:
+  mariadb_data:

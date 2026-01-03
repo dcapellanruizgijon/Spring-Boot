@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Variables de entorno - NO SUBIR AL REPOSITORIO
+.env
+.env.*
+*.env
+secrets/
+config/application*.properties
