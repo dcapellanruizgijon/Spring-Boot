@@ -19,4 +19,4 @@ COPY --from=builder /app/target/*.jar app.jar
 # Expose the port the app will run on (ES MEJOR USAR EL 8080 ya que Spring a veces ignora el server.port dentro de contenedores)
 EXPOSE 8080    
 # Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar -Dserver.port=${PORT:-8080} app.jar"]
