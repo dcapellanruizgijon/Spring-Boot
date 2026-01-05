@@ -1,7 +1,8 @@
-# ARCHIVO: docker-compose.yml  (DEFINIMOS  LA CONFIGURACION PARA EJECUTAR VARIOS CONTENEDORES A LA VEZ)
+# ARCHIVO: docker-compose.yml  
+#(DEFINIMOS  LA CONFIGURACION PARA EJECUTAR VARIOS CONTENEDORES A LA VEZ)
 
 services:
-  # Tu aplicación Spring Boot
+  # Cada servicio corresponde a un contenedor
   gimnasio-app:
     build: .
     container_name: app-spring
@@ -11,12 +12,16 @@ services:
     ports:
       - "8081:8080"  # Mapea el puerto 8081 al 8080 interno
     # Cargamos las variables del archivo .env
+    #IMPORTANTE: Nuestro .env no está haciendo nada ya que en enviroment estamos sobrescribiendo esas variables
     env_file:
       - .env
-    environment:
+    environment:   #MUY IMPORTANTE: al hacer esto hacemos que tome estas variables y no preste atención a las del .env ya que enviroment tiene mayor prioridad que .env
       # Mapea variables al formato que Spring espera
       SERVER_PORT: 8080
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/Gimnasio
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/Gimnasio   
+      #la URL de la bbdd no funcionaria si pusieramos jdbc:mariadb://localhost:3306/Gimnasio 
+      # YA QUE COMO LA BBDD ESTA EN OTRO CONTENEDOR NO PODRIA ACCEDER
+
       SPRING_DATASOURCE_USERNAME: UsuarioAdmin
       SPRING_DATASOURCE_PASSWORD: admin123
 

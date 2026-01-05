@@ -16,7 +16,9 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 # Copy the JAR file from the builder stage
 COPY --from=builder /app/target/*.jar app.jar
-# Expose the port the app will run on (ES MEJOR USAR EL 8080 ya que Spring a veces ignora el server.port dentro de contenedores)
+# Expose the port the app will run on
 EXPOSE 8080    
 # Command to run the application
 ENTRYPOINT ["sh", "-c", "java -jar -Dserver.port=${PORT:-8080} app.jar"]
+#al poner el puerto en el ENTRYPOINT podriamos quitarlo del aplication.propierties
+#  PORT:-  LO QUE HACE ES BUSCAR LA VARIABLE PORT EN EL .ENV, si no la encuentra usa el 8080
