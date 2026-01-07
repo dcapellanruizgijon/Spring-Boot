@@ -23,7 +23,7 @@ public class UsuarioServicioImplementado implements UsuarioServicio{
 
     @Override//findById devuelve un type Optional que puede ser un usuario o ser null.  .get() lo que hace es extraer ese valor
     public Usuario obtenerUsuario(Integer id) {
-        return repo.findById(id).get();//no se por que da ese warn y en el proyecto de ruben no da
+        return repo.findById(id).get();//no se por que da ese warn
     }
 
     @Override

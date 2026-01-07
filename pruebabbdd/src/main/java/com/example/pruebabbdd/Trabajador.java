@@ -18,7 +18,7 @@ public class Trabajador {
     
     @Id//marca este atributo como clave primaria de la tabla
     @GeneratedValue(strategy = GenerationType.IDENTITY)//define como se generan los valores para la clave primaria (strategy IDENTITY ==> auto incrementacion de la bbbdd (si se añade un elemeto se crea debajo con el numero siguiente al ultimo registro (si se elimina un registro los numeros se mantienen como estan y no se reorganizan)))
-    private Integer id;
+    private Integer id;//Tiene que ser objeto Integer para pder manejar valores null (int no podria ser null)
 
     @Column(name = "nombre")//nombre de la columna de la base de datos
     private String nombre;

@@ -17,7 +17,7 @@ public class Usuario implements OperacionesSalud{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer id;//Tiene que ser objeto Integer para pder manejar valores null (int no podria ser null)
 
 	@Column
 	private String nombre;
