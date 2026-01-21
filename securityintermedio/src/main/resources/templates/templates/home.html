@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .user-info { background: #e3f2fd; padding: 15px; }
+    </style>
+</head>
+<body>
+    <h1>🏡 Página Home</h1>
+    
+    <div class="user-info">
+        <p>✅ Has iniciado sesión correctamente.</p>
+        <p>Esta página solo es visible para usuarios autenticados.</p>
+    </div>
+    
+    <h3>Opciones:</h3>
+    <ul>
+        <li><a href="/">Ir al inicio público</a></li>
+    </ul>
+    
+    <form action="/logout" method="post">
+        <button type="submit" style="background: red;">🚪 Cerrar sesión</button>
+    </form>
+</body>
+</html>
