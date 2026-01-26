@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Área Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .menu { background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: #333; }
+        .menu a:hover { text-decoration: underline; }
+        .admin-area { background: #ffebee; padding: 15px; border-radius: 5px; border: 2px solid #f44336; }
+        .error { color: #d32f2f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Área de Administración</h1>
+        
+        <div class="menu">
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/root}">Área Admin</a>
+            <a th:href="@{/logout}">Logout</a>
+        </div>
+        
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <div class="admin-area">
+                <h2>¡Bienvenido Administrador!</h2>
+                <p>Esta es el área ROOT. Solo usuarios con rol ADMIN pueden acceder aquí.</p>
+                
+                <div th:if="${#authentication != null}">
+                    <h3>Información del Admin:</h3>
+                    <p><strong>Usuario:</strong> <span th:text="${#authentication.name}"></span></p>
+                    <p><strong>Roles:</strong> <span th:text="${#authentication.authorities}"></span></p>
+                </div>
+                
+                <h3>Funciones de administración:</h3>
+                <ul>
+                    <li>Gestión de usuarios</li>
+                    <li>Configuración del sistema</li>
+                    <li>Ver logs de seguridad</li>
+                    <li>Gestión de permisos</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div th:unless="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <div class="error">
+                <h2>Acceso Denegado</h2>
+                <p>No tienes permisos para acceder a esta área.</p>
+                <p>Solo usuarios con rol ADMIN pueden ver esta página.</p>
+                <p>Tu rol actual: <span th:text="${#authentication.authorities}"></span></p>
+                <p><a th:href="@{/home}">Volver al Home</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Principal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .menu { background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: #333; }
+        .menu a:hover { text-decoration: underline; }
+        .info { background: #e8f5e8; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido al Sistema</h1>
+        
+        <div class="menu">
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/root}">Área Admin</a>
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/logout}">Logout</a>
+        </div>
+        
+        <div class="info">
+            <h2>Información Pública</h2>
+            <p>Esta es la página principal pública. Cualquier persona puede verla.</p>
+            <p>Para acceder a las áreas restringidas, debes iniciar sesión.</p>
+            
+            <h3>Usuarios de prueba:</h3>
+            <ul>
+                <li><strong>Admin:</strong> usuario: admin / contraseña: admin</li>
+                <li><strong>Usuario normal:</strong> usuario: normal / contraseña: normal</li>
+                <li><strong>Invitado:</strong> usuario: guest / contraseña: guest</li>
+            </ul>
+        </div>
+        
+        <div th:if="${#authentication != null and #authentication.isAuthenticated()}">
+            <p><strong>Usuario actual:</strong> <span th:text="${#authentication.name}"></span></p>
+            <p><strong>Roles:</strong> <span th:text="${#authentication.authorities}"></span></p>
+        </div>
+    </div>
+</body>
+</html> 

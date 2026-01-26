@@ -17,4 +17,9 @@ public class SecurityController {
     public String home() {
     return "home";
  }
+
+ @RequestMapping("/root")
+   public String root() {
+      return "root";
+   }
 }
