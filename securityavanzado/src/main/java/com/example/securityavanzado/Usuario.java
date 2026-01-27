@@ -20,7 +20,7 @@ public class Usuario {
     
     private boolean activo = true;
     
-    // Relación simple: un usuario puede tener varios roles
+    //un usuario puede tener varios roles
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "usuario_roles",
