@@ -1,4 +1,4 @@
-package com.example.securityintermedio;
+package com.example.securityavanzado;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

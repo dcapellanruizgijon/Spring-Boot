@@ -13,81 +13,58 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity  //esto activa la configuración personalizada (desactiva la automática)
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Configuración de autorización de rutas (consolidada)
-            .authorizeHttpRequests(autorizado -> autorizado
-                // Rutas públicas
-                .requestMatchers("/", "/login").permitAll()
-                
-                // Rutas protegidas por roles
-                .requestMatchers("/home").authenticated() // Cualquier usuario autenticado
-                .requestMatchers("/root").hasRole("ADMIN") // Solo con rol ADMIN
-                
-                // Todas las demás rutas requieren autenticación
-                .anyRequest().authenticated()
+            //desactiva la protección contra ataques CSRF
+            .csrf(csrf -> csrf.disable())
+
+            // Configura qué URLs requieren qué permisos
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers("/", "/publica").permitAll()  // Acceso libre
+                .requestMatchers("/admin").hasRole("ADMIN")    // Solo admin
+                .requestMatchers("/usuario").hasAnyRole("USER", "ADMIN")  // User o admin (hashAnyRole controla el acceso por roles)
+                .anyRequest().authenticated()  // El resto requiere login
             )
-            
-            // Configuración de autenticación (Cómo se logean)
-            .formLogin(formulario -> formulario
-                .defaultSuccessUrl("/home", true)
-                .permitAll()
+
+            .formLogin(form -> form
+                .loginPage("/login")//DESACTIVA LA PAGINA DE LOGIN AUTOMATICA (le damos nosotros cual es la página de login)
+                .defaultSuccessUrl("/")//rediricge después de login exitoso
+                .permitAll()//permite acceso a login sin autenticacion
             )
-            
-            // Configuración de logout
-            .logout(deslogueo -> deslogueo
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
+
+            .logout(logout -> logout
+                .logoutSuccessUrl("/")// Va aquí tras logout
                 .permitAll()
             );
-        
+
         return http.build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        var userDetailsService = new InMemoryUserDetailsManager();
+        UserDetails user = User.builder()
+            .username("user")
+            .password(passwordEncoder().encode("123"))
+            .roles("USER")//le damos el rol de usuario
+            .build();
 
-        // Usuario ADMIN con múltiples roles
-        UserDetails user1 = User.builder()
+        UserDetails admin = User.builder()
             .username("admin")
-            .password(this.passwordEncoder().encode("admin"))
-            .authorities("write")
-            .roles("ADMIN", "USER") // Tiene roles ROLE_ADMIN y ROLE_USER
+            .password(passwordEncoder().encode("456"))
+            .roles("ADMIN")//le damos el rol de administrador
             .build();
 
-        // Usuario normal USER
-        UserDetails user2 = User.builder()
-            .username("normal")
-            .password(this.passwordEncoder().encode("normal"))
-            .authorities("write")
-            .roles("USER") // Tiene rol ROLE_USER
-            .build();
 
-        // Usuario con rol GUEST (corregido username único)
-        UserDetails user3 = User.builder()
-            .username("guest")
-            .password(this.passwordEncoder().encode("guest"))
-            .authorities("read") // Solo permiso de lectura
-            .roles("GUEST") // Rol GUEST
-            .build();
-
-        // Añade los usuarios al gestor
-        userDetailsService.createUser(user1);
-        userDetailsService.createUser(user2);
-        userDetailsService.createUser(user3);
-
-        return userDetailsService;
+            //GUARDA LOS USUARIOS EN MEMORIA
+        return new InMemoryUserDetailsManager(user, admin);
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();//encripta la contraseña con BCrypt de forma segura
     }
 }
