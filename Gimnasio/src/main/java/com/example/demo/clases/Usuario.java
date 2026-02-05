@@ -30,7 +30,7 @@ public class Usuario implements OperacionesSalud{
 	@Column
     private double altura;
 	
-	@OneToMany(mappedBy = "u")//nombre del atributo en la clase Rutina que apunta a departamento
+	@OneToMany(mappedBy = "u")//nombre del atributo en la clase Rutina que apunta a usuario
     private List<Rutina> rutinas;//list en lugar de ArrayList porque es lo que implementa hibernate
     
     public Usuario(String nombre, String contrasena, int edad, double peso, double altura) {

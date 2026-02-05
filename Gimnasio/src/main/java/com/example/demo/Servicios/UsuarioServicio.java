@@ -10,9 +10,11 @@ public interface UsuarioServicio {
 
     public Usuario traerUsuario(Integer idUsuario);
 
-    public Usuario guardarTrabajador(Usuario t);
+    public void guardarTrabajador(Usuario t);
 
     public Usuario obtenerUsuario(Integer id);
+
+    public Usuario buscarPorNombre(String nombre);
 
     public Usuario actualizarUsuario(Usuario trabajador);
 

@@ -71,65 +71,137 @@ public class ControladorRutinas {
     
     // Mostrar formulario de login
     @GetMapping("/login")
-    public String mostrarLogin() {
+    public String mostrarLogin(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "logout", required = false) String logout,
+                            Model model) {
+        
+        if (error != null) {
+            model.addAttribute("error", "Usuario o contraseña incorrectos");
+        }
+        
+        if (logout != null) {
+            model.addAttribute("message", "Has cerrado sesión correctamente");
+        }
+        
         return "login";
     }
-    
-    
-    // Procesar el formulario de login
-    @PostMapping("/login")
-    public String procesarLogin(HttpSession session, Model model, @RequestParam String nom, @RequestParam String cont) {
-        List<Usuario> usuarios=servicioUsuario.listarUsuarios();
-        // Buscar usuario en el array
         
-        for (Usuario usuario : usuarios) {
+    //Comentado porque ahora lo hace spring security
+    // // Procesar el formulario de login
+    // @PostMapping("/login")
+    // public String procesarLogin(HttpSession session, Model model, @RequestParam String nom, @RequestParam String cont) {
+    //     List<Usuario> usuarios=servicioUsuario.listarUsuarios();
+    //     // Buscar usuario en el array
+        
+    //     for (Usuario usuario : usuarios) {
 
-            if (usuario.getNombre().equals(nom) && usuario.getContrasena().equals(cont)) {
+    //         if (usuario.getNombre().equals(nom) && usuario.getContrasena().equals(cont)) {
 
-                //para que se carguen tambien las rutinas de la bbdd(hibernate sabe que rutinas corresponden a cada usuario gracias a las claves)
-                //SIN HACER ESTO NO FUNCIONA YA QUE NO RESCATARIA LAS RUTINAS DE LA BBDD
-                Hibernate.initialize(usuario.getRutinas());
-                // También inicializar los ejercicios de cada rutina
-                if (usuario.getRutinas() != null) {
-                    for (Rutina rutina : usuario.getRutinas()) {
-                        Hibernate.initialize(rutina.getEjercicios());
-                    }
-                }
+    //             //para que se carguen tambien las rutinas de la bbdd(hibernate sabe que rutinas corresponden a cada usuario gracias a las claves)
+    //             //SIN HACER ESTO NO FUNCIONA YA QUE NO RESCATARIA LAS RUTINAS DE LA BBDD
+    //             Hibernate.initialize(usuario.getRutinas());
+    //             // También inicializar los ejercicios de cada rutina
+    //             if (usuario.getRutinas() != null) {
+    //                 for (Rutina rutina : usuario.getRutinas()) {
+    //                     Hibernate.initialize(rutina.getEjercicios());
+    //                 }
+    //             }
 
-                // Usuario encontrado - guardar en sesión
-                session.setAttribute("usuario", usuario);
-                return "redirect:/";  // Redirigir a la página principal
-            }
-        }   
+    //             // Usuario encontrado - guardar en sesión
+    //             session.setAttribute("usuario", usuario);
+    //             return "redirect:/";  // Redirigir a la página principal
+    //         }
+    //     }   
 
-        // Si no encuentra usuario, mostrar error
-        model.addAttribute("error", "Usuario o contraseña incorrectos");
-        return "login";
+    //     // Si no encuentra usuario, mostrar error
+    //     model.addAttribute("error", "Usuario o contraseña incorrectos");
+    //     return "login";
+    // }
+
+    @GetMapping("/registro")
+    public String redirigeARegistro(){
+        return "registro";
     }
 
     @PostMapping("/registro")
-    public String nuevoRegistro(HttpSession sesion, @RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
-        //asi se parsea un string
-        int ed=Integer.parseInt(edad);
-        double pes=Double.parseDouble(peso);
-        double alt=Double.parseDouble(altura);
-        System.out.println("edad: "+ed);
-        System.out.println("peso: "+pes);
-        System.out.println("altura: "+alt);
-        Usuario u=new Usuario(nom, cont, ed, pes, alt);
+    public String nuevoRegistro(@RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
+        // //asi se parsea un string
+        // int ed=Integer.parseInt(edad);
+        // double pes=Double.parseDouble(peso);
+        // double alt=Double.parseDouble(altura);
+        // System.out.println("edad: "+ed);
+        // System.out.println("peso: "+pes);
+        // System.out.println("altura: "+alt);
+        // Usuario u=new Usuario(nom, cont, ed, pes, alt);
 
-        sesion.setAttribute("usuario", u);
-        servicioUsuario.guardarTrabajador(u);
-        return "redirect:/";
+        // //sesion.setAttribute("usuario", u);
+        // servicioUsuario.guardarTrabajador(u);//lo guarda con la contraseña encriptada (metodo creado en el usuarioServicio)
+        // return "redirect:/login?registro=true";//redirigimos al login
+
+         // ¡ESTO DEBERÍA IMPRIMIRSE SI EL MÉTODO SE EJECUTA!
+    System.out.println("🔥🔥🔥🔥🔥 MÉTODO REGISTRO EJECUTADO 🔥🔥🔥🔥🔥");
+    System.out.println("Nombre: " + nom);
+
+        // 1. Imprime datos recibidos
+        System.out.println("🔥 DATOS DEL FORMULARIO:");
+        System.out.println("   Nombre: " + nom);
+        System.out.println("   Contraseña: " + cont);
+        System.out.println("   Edad: " + edad);
+        System.out.println("   Peso: " + peso);
+        System.out.println("   Altura: " + altura);
+        
+        // 2. Convierte los datos
+        int ed = Integer.parseInt(edad);
+        double pes = Double.parseDouble(peso);
+        double alt = Double.parseDouble(altura);
+        
+        System.out.println("✅ Datos convertidos:");
+        System.out.println("   Edad (int): " + ed);
+        System.out.println("   Peso (double): " + pes);
+        System.out.println("   Altura (double): " + alt);
+        
+        // 3. Crea el usuario
+        Usuario u = new Usuario(nom, cont, ed, pes, alt);
+        System.out.println("👤 Usuario creado (en memoria):");
+        System.out.println("   ID: " + u.getId()); // Debería ser 0 si es nuevo
+        System.out.println("   Nombre: " + u.getNombre());
+        System.out.println("   Contraseña SIN encriptar: " + u.getContrasena());
+        
+        try {
+            // 4. Intenta guardar
+            System.out.println("💾 Intentando guardar en BD...");
+            servicioUsuario.guardarTrabajador(u);
+            System.out.println("🎉 ¡Usuario guardado en BD!");
+            
+            // 5. Verifica si se guardó realmente
+            Usuario verificado = servicioUsuario.buscarPorNombre(nom);
+            if (verificado != null) {
+                System.out.println("🔍 Usuario verificado en BD:");
+                System.out.println("   ID: " + verificado.getId());
+                System.out.println("   Nombre: " + verificado.getNombre());
+                System.out.println("   Contraseña ENCRIPTADA: " + verificado.getContrasena());
+            } else {
+                System.out.println("❌ ERROR: Usuario no encontrado después de guardar");
+            }
+            
+            return "redirect:/login?registro=true";
+            
+        } catch (Exception e) {
+            System.out.println("💥 ERROR AL GUARDAR:");
+            System.out.println("   Mensaje: " + e.getMessage());
+            e.printStackTrace();
+            return "redirect:/registro?error=true";
+        }
     }
 
+    //COmentado porque lo hce spring security
     // Cerrar sesión
-    @GetMapping("/cerrarSesion")
-    public String cerrarSesion(HttpSession session) {
-        // Eliminar usuario de la sesión
-        session.removeAttribute("usuario");
-        return "redirect:/login";  // Redirigir al login
-    }
+    // @GetMapping("/cerrarSesion")
+    // public String cerrarSesion(HttpSession session) {
+    //     // Eliminar usuario de la sesión
+    //     session.removeAttribute("usuario");
+    //     return "redirect:/login";  // Redirigir al login
+    // }
     
     
 

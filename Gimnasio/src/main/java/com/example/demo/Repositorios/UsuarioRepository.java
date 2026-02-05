@@ -6,5 +6,7 @@ import com.example.demo.clases.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
+
+    Usuario findByNombre(String nombre);//para poder buscar por nombre
     
 }
