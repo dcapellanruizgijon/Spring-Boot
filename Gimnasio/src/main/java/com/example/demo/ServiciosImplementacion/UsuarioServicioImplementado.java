@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.Repositorios.UsuarioRepository;
 import com.example.demo.Servicios.UsuarioServicio;
@@ -30,30 +29,12 @@ public class UsuarioServicioImplementado implements UsuarioServicio{
         return repo.findById(id).get();//no se por que da ese warn
     }
 
-    @Override  
-                 /*el nombre seria guardarUsuario()  */
-    public void guardarTrabajador(Usuario usuario) {
-        System.out.println("=== ENTRANDO A guardarTrabajador ===");
-        System.out.println("📝 Usuario recibido:");
-        System.out.println("   Nombre: " + usuario.getNombre());
-        System.out.println("   Contraseña original: " + usuario.getContrasena());
-        
-        // 1. Encriptar
-        String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
-        System.out.println("🔐 Contraseña encriptada:");
-        System.out.println("   Hash: " + contrasenaEncriptada);
-        System.out.println("   Es BCrypt?: " + contrasenaEncriptada.startsWith("$2a$"));
-        
-        usuario.setContrasena(contrasenaEncriptada);
-        
-        // 2. Guardar
-        System.out.println("💿 Guardando en repository...");
-        Usuario guardado = repo.save(usuario);
-        
-        System.out.println("✅ Usuario guardado:");
-        System.out.println("   ID asignado: " + guardado.getId());
-        System.out.println("   Nombre: " + guardado.getNombre());
-        System.out.println("=== SALIENDO DE guardarTrabajador ===");
+    @Override               /*el nombre seria guardarUsuario()  */
+    public Usuario guardarTrabajador(Usuario u) {
+        // Encriptar contraseña antes de guardar
+        String contrasenaEncriptada = passwordEncoder.encode(u.getContrasena());
+        u.setContrasena(contrasenaEncriptada);
+        return repo.save(u);
     }
 
     @Override

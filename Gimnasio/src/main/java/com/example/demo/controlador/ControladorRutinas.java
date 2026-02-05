@@ -125,73 +125,18 @@ public class ControladorRutinas {
 
     @PostMapping("/registro")
     public String nuevoRegistro(@RequestParam String nom, @RequestParam String cont, @RequestParam String edad, @RequestParam String peso, @RequestParam String altura){
-        // //asi se parsea un string
-        // int ed=Integer.parseInt(edad);
-        // double pes=Double.parseDouble(peso);
-        // double alt=Double.parseDouble(altura);
-        // System.out.println("edad: "+ed);
-        // System.out.println("peso: "+pes);
-        // System.out.println("altura: "+alt);
-        // Usuario u=new Usuario(nom, cont, ed, pes, alt);
+        //asi se parsea un string
+        int ed=Integer.parseInt(edad);
+        double pes=Double.parseDouble(peso);
+        double alt=Double.parseDouble(altura);
+        System.out.println("edad: "+ed);
+        System.out.println("peso: "+pes);
+        System.out.println("altura: "+alt);
+        Usuario u=new Usuario(nom, cont, ed, pes, alt);
 
-        // //sesion.setAttribute("usuario", u);
-        // servicioUsuario.guardarTrabajador(u);//lo guarda con la contraseña encriptada (metodo creado en el usuarioServicio)
-        // return "redirect:/login?registro=true";//redirigimos al login
-
-         // ¡ESTO DEBERÍA IMPRIMIRSE SI EL MÉTODO SE EJECUTA!
-    System.out.println("🔥🔥🔥🔥🔥 MÉTODO REGISTRO EJECUTADO 🔥🔥🔥🔥🔥");
-    System.out.println("Nombre: " + nom);
-
-        // 1. Imprime datos recibidos
-        System.out.println("🔥 DATOS DEL FORMULARIO:");
-        System.out.println("   Nombre: " + nom);
-        System.out.println("   Contraseña: " + cont);
-        System.out.println("   Edad: " + edad);
-        System.out.println("   Peso: " + peso);
-        System.out.println("   Altura: " + altura);
-        
-        // 2. Convierte los datos
-        int ed = Integer.parseInt(edad);
-        double pes = Double.parseDouble(peso);
-        double alt = Double.parseDouble(altura);
-        
-        System.out.println("✅ Datos convertidos:");
-        System.out.println("   Edad (int): " + ed);
-        System.out.println("   Peso (double): " + pes);
-        System.out.println("   Altura (double): " + alt);
-        
-        // 3. Crea el usuario
-        Usuario u = new Usuario(nom, cont, ed, pes, alt);
-        System.out.println("👤 Usuario creado (en memoria):");
-        System.out.println("   ID: " + u.getId()); // Debería ser 0 si es nuevo
-        System.out.println("   Nombre: " + u.getNombre());
-        System.out.println("   Contraseña SIN encriptar: " + u.getContrasena());
-        
-        try {
-            // 4. Intenta guardar
-            System.out.println("💾 Intentando guardar en BD...");
-            servicioUsuario.guardarTrabajador(u);
-            System.out.println("🎉 ¡Usuario guardado en BD!");
-            
-            // 5. Verifica si se guardó realmente
-            Usuario verificado = servicioUsuario.buscarPorNombre(nom);
-            if (verificado != null) {
-                System.out.println("🔍 Usuario verificado en BD:");
-                System.out.println("   ID: " + verificado.getId());
-                System.out.println("   Nombre: " + verificado.getNombre());
-                System.out.println("   Contraseña ENCRIPTADA: " + verificado.getContrasena());
-            } else {
-                System.out.println("❌ ERROR: Usuario no encontrado después de guardar");
-            }
-            
-            return "redirect:/login?registro=true";
-            
-        } catch (Exception e) {
-            System.out.println("💥 ERROR AL GUARDAR:");
-            System.out.println("   Mensaje: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/registro?error=true";
-        }
+        //sesion.setAttribute("usuario", u);
+        servicioUsuario.guardarTrabajador(u);//lo guarda con la contraseña encriptada (metodo creado en el usuarioServicio)
+        return "redirect:/login?registro=true";//redirigimos al login
     }
 
     //COmentado porque lo hce spring security

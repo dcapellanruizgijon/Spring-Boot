@@ -10,7 +10,7 @@ public interface UsuarioServicio {
 
     public Usuario traerUsuario(Integer idUsuario);
 
-    public void guardarTrabajador(Usuario t);
+    public Usuario guardarTrabajador(Usuario t);
 
     public Usuario obtenerUsuario(Integer id);
 
