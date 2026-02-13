@@ -13,6 +13,8 @@ public interface RutinaServicio {
 
     public void borrarRutina(Integer id);
 
+    public Rutina getRutinaById(Integer id);
+
     
     
     // public List<Rutina> rutinasDelUsuario(Usuario u);

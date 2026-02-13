@@ -33,7 +33,10 @@ public class RutinaServicioImplementacion implements RutinaServicio{
         
     }
 
-    
+    @Override
+    public Rutina getRutinaById(Integer id){
+        return repoRu.findById(id).get();
+    }
     
     
 

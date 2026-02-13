@@ -1,5 +1,7 @@
 package com.example.demo.clases;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +26,7 @@ public class Ejercicio {
 
     @ManyToOne
     @JoinColumn(name = "rutina_id")//nombre que se le dará a la columna
+    @JsonIgnore //para evitar el bucle infinito con swager
     private Rutina r;
     
     public Ejercicio(String nombre, Rutina r) {

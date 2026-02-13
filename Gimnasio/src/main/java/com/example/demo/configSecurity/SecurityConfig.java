@@ -24,13 +24,18 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())   /*MUY IMPORTANTE PARA QUE NO FALLE EL POST DEL REGISTRO */
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/registro").permitAll()// Páginas públicas
+                .requestMatchers("/login", "/registro",
+                                "/swagger-ui/**",      // AÑADE ESTO
+                               "/v3/api-docs/**",     // AÑADE ESTO
+                               "/swagger-ui.html")
+                .permitAll()// Páginas públicas
+                
                 .anyRequest().authenticated()   // Resto protegido
             )
             .formLogin(form -> form
                 .loginPage("/login")    // Tu página de login personalizada
                 .loginProcessingUrl("/login")
-                .successHandler(successHandler)  // ¡Aquí está la magia!
+                .successHandler(successHandler) 
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

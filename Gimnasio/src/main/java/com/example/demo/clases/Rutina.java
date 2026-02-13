@@ -3,6 +3,8 @@ package com.example.demo.clases;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +29,7 @@ public class Rutina {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")//se creará una columna con este nombre en la tabla Rutinas
+    @JsonIgnore
     private Usuario u;
 
     @OneToMany(mappedBy = "r", cascade = CascadeType.REMOVE)//nombre del atributo de la clase Ejercicio.  Y EL CASCADE ES PARA QUE SI ELIMINAMOS UNA RUTINA SE ELIMINEN TAMBIÉN SUS EJERCICIOS
