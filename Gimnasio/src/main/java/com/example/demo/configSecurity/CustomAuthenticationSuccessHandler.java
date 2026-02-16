@@ -1,6 +1,8 @@
 package com.example.demo.configSecurity;
 
 import com.example.demo.Servicios.UsuarioServicio;
+import com.example.demo.clases.Ejercicio;
+import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,30 +25,45 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     @Transactional
-    public void onAuthenticationSuccess(HttpServletRequest request, 
-                                      HttpServletResponse response, 
-                                      Authentication authentication) throws IOException, ServletException {
-        
+    public void onAuthenticationSuccess(HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
+
         String username = authentication.getName();
-        
-        // Buscar el usuario en la base de datos
-        Usuario usuario = usuarioServicio.buscarPorNombre(username);
-        
-        if (usuario != null) {
-            // Inicializar las relaciones Hibernate (igual que hacías antes)
-            Hibernate.initialize(usuario.getRutinas());
-            if (usuario.getRutinas() != null) {
-                for (com.example.demo.clases.Rutina rutina : usuario.getRutinas()) {
-                    Hibernate.initialize(rutina.getEjercicios());
-                }
-            }
-            
+
+        // Buscar el usuario en la base de datosy le mete ya las rutinas antes de
+        // guardarlo en las sesion
+        Usuario usuarioBasico = usuarioServicio.buscarPorNombre(username);
+
+        if (usuarioBasico != null) {
+            // Obtener el usuario completo con todas sus relaciones
+            Usuario usuarioCompleto = usuarioServicio.traerUsuarioConTodo(usuarioBasico.getId());
+
+            Usuario usuarioLimpio = desproxificarUsuario(usuarioCompleto);
+
             // Guardar el usuario completo en la sesión
             HttpSession session = request.getSession();
-            session.setAttribute("usuario", usuario);
+            session.setAttribute("usuario", usuarioLimpio);
         }
-        
+
         // Redirigir a la página principal
         response.sendRedirect("/");
     }
+
+    private Usuario desproxificarUsuario(Usuario usuario) {
+        org.hibernate.Hibernate.unproxy(usuario);
+
+        if (usuario.getRutinas() != null) {
+            for (Rutina rutina : usuario.getRutinas()) {
+                org.hibernate.Hibernate.unproxy(rutina);
+                if (rutina.getEjercicios() != null) {
+                    for (Ejercicio ejercicio : rutina.getEjercicios()) {
+                        org.hibernate.Hibernate.unproxy(ejercicio);
+                    }
+                }
+            }
+        }
+        return usuario;
+    }
+
 }

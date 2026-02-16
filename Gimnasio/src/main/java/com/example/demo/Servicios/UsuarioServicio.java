@@ -12,11 +12,15 @@ public interface UsuarioServicio {
 
     public Usuario guardarTrabajador(Usuario t);
 
-    public Usuario obtenerUsuario(Integer id);
+    // public Usuario obtenerUsuario(Integer id);
 
     public Usuario buscarPorNombre(String nombre);
 
     public Usuario actualizarUsuario(Usuario trabajador);
 
     public void borrarUsuario(Integer id);
+
+    public Usuario traerUsuarioConTodo(Integer id);
+
+    public Usuario traerUsuarioSinCache(Integer idUsuario);
 }

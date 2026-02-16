@@ -25,9 +25,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())   /*MUY IMPORTANTE PARA QUE NO FALLE EL POST DEL REGISTRO */
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/registro",
-                                "/swagger-ui/**",      // AÑADE ESTO
-                               "/v3/api-docs/**",     // AÑADE ESTO
-                               "/swagger-ui.html")
+                                "/swagger-ui/**",      // swagger
+                               "/v3/api-docs/**",     // swagger
+                               "/swagger-ui.html",      //swagger
+                                "/actuator/**")     //ACTUATOR
                 .permitAll()// Páginas públicas
                 
                 .anyRequest().authenticated()   // Resto protegido

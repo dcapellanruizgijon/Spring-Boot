@@ -4,7 +4,8 @@
 services:
   # Cada servicio corresponde a un contenedor
   gimnasio-app:
-    build: .
+    build: .            #IMPORTANTISIMOOOO: Aquí le estamos diciendo a docker-compose.yml donde está el archivo Dockerfile(en este caso está en este mismo directorio) 
+                        #Si no usaramos Dockerfile, en lugar de build: . usariamos una imagen (COMO LO ESTAMOS HACIENDO ABAJO EN EL CONTEneDOR MARIADB)
     container_name: app-spring
     restart: unless-stopped
     depends_on:
@@ -27,7 +28,7 @@ services:
 
   # MariaDB 
   mariadb:
-    image: mariadb:10.11
+    image: mariadb:10.11    #iMPORTANTISIMO: aQUI USAMOS UNA IMAGEN, A DIFERENCIA DE LA APLICACIÓN QUE USA el Dockerfile
     container_name: app-db
     restart: unless-stopped
     environment:

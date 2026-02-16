@@ -21,7 +21,7 @@ import com.example.demo.clases.Ejercicio;
 import com.example.demo.clases.Rutina;
 
 @RestController  // IMPORTANTE esto es para API REST
-@RequestMapping("/api")
+@RequestMapping("/api")//esto le dice a esta clase que /api es la ruta base (si quisieramos dividir pordiramos poner en esta clase /api/rutinas en otra /api/ejercicios)
 public class ApiRutinasController {
     
     @Autowired

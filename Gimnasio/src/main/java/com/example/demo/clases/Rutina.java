@@ -71,6 +71,10 @@ public class Rutina {
     public List<Ejercicio> getEjercicios() {
         return ejercicios;
     }
+    public void setEjercicios(List<Ejercicio> ejs) {
+        this.ejercicios=ejs;
+    }
+
 
     //NO PUEDE TENER SETTER EL ARRAY DE EJERCICIO
     // public void setEjercicios(ArrayList<Ejercicio> ejercicios) {
