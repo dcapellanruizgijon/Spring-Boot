@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-//LE DAMOS DATOS A LA BBDD H2
+//LE DAMOS DATOS A LA BBDD H2 
 @Configuration
 public class DataLoader {
 

@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            //desactiva la protección contra ataques CSRF
+            //desactiva la protección contra algunos ataques
             .csrf(csrf -> csrf.disable())
 
             // Configura qué URLs requieren qué permisos
