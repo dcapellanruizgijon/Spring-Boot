@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat con IA - Fast Rutinas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .chat-container {
+            padding: 20px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+
+        .bot-message {
+            background: white;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-header {
+            font-size: 0.8em;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .message-content {
+            line-height: 1.5;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-form input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-form button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .input-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 10px 20px 20px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #45a049;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            max-width: 80%;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Asistente IA</h1>
+            <div class="user-info">
+                <span>Bienvenido, <strong th:text="${usuario.nombre}"></strong>!</span>
+            </div>
+        </div>
+
+        <!-- Botón para volver a la página principal -->
+        <a href="/" class="back-button">← Volver a Rutinas</a>
+
+        <!-- Contenedor del chat -->
+        <div class="chat-container" id="chatContainer">
+            <!-- Mensaje de bienvenida -->
+            <div class="message bot-message">
+                <div class="message-header">🤖 Asistente IA</div>
+                <div class="message-content">
+                    ¡Hola! Soy tu asistente virtual. Puedes preguntarme sobre ejercicios, rutinas, nutrición o cualquier duda relacionada con el fitness. ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+
+            <!-- Mostrar mensaje del usuario si existe -->
+            <div th:if="${pregunta}" class="message user-message">
+                <div class="message-header">Tú</div>
+                <div class="message-content" th:text="${pregunta}"></div>
+            </div>
+
+            <!-- Mostrar respuesta del bot si existe -->
+            <div th:if="${respuesta}" class="message bot-message">
+                <div class="message-header">🤖 Asistente IA</div>
+                <div class="message-content" th:text="${respuesta}"></div>
+            </div>
+
+            <!-- Indicador de escritura (oculto por defecto) -->
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Formulario de entrada -->
+        <div class="input-container">
+            <form class="input-form" action="/chat/enviar" method="post" id="chatForm">
+                <input type="text" 
+                       name="mensaje" 
+                       placeholder="Escribe tu mensaje..." 
+                       required 
+                       autocomplete="off"
+                       id="mensajeInput">
+                <button type="submit" id="enviarBtn">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script para mejor UX -->
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', function() {
+            // Mostrar indicador de escritura
+            document.getElementById('typingIndicator').style.display = 'block';
+            
+            // Deshabilitar el botón de envío
+            document.getElementById('enviarBtn').disabled = true;
+            
+            // Guardar el mensaje antes de limpiar
+            const mensaje = document.getElementById('mensajeInput').value;
+            
+            // Limpiar el input después de enviar
+            setTimeout(() => {
+                document.getElementById('mensajeInput').value = '';
+            }, 100);
+        });
+
+        // Auto-scroll al final del chat
+        function scrollToBottom() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Scroll al cargar la página
+        window.onload = scrollToBottom;
+        
+        // Scroll después de recibir respuesta
+        setTimeout(scrollToBottom, 100);
+    </script>
+</body>
+</html>

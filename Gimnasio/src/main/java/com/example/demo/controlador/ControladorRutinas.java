@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.demo.Servicios.EjercicioServicio;
 import com.example.demo.Servicios.RutinaServicio;
 import com.example.demo.Servicios.UsuarioServicio;
+import com.example.demo.ServiciosImplementacion.ChatService;
 import com.example.demo.clases.Ejercicio;
 import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
@@ -31,6 +32,10 @@ public class ControladorRutinas {
     private RutinaServicio servicioRutina;
     @Autowired
     private EjercicioServicio servicioEjercicio;
+
+    /* para open ai */
+    @Autowired
+    private ChatService chatService;
 
     // Página principal - si no hay usuario va al login
     @GetMapping("/")
@@ -263,6 +268,39 @@ public class ControladorRutinas {
         cookie.setMaxAge(0); // Eliminamos la cookie poniendo su tiempo de vida a 0
         response.addCookie(cookie);
         return "redirect:/";
+    }
+
+
+    /* open ai */
+    @GetMapping("/chat")
+    public String mostrarChat(Model model, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuario", usuario);
+        return "chat";
+    }
+
+    @PostMapping("/chat/enviar")
+    public String enviarMensajeChat(@RequestParam String mensaje,
+            HttpSession session,
+            Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        String respuesta = chatService.generarRespuesta(mensaje);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pregunta", mensaje);
+        model.addAttribute("respuesta", respuesta);
+
+        return "chat";
     }
 
 }
