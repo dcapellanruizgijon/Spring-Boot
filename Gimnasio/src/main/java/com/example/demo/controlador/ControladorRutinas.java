@@ -240,14 +240,14 @@ public class ControladorRutinas {
 
             // VALIDAR TAMAÑO 
             if (imagen != null && !imagen.isEmpty()) {
-                long maxSize = 2 * 1024 * 1024; // 2MB en bytes
+                long maxSize = 2 * 1024 * 1024; // 2MB maximo
                 long fileSize = imagen.getSize();
 
                 System.out
                         .println("📸 Tamaño de imagen: " + fileSize + " bytes (" + (fileSize / (1024 * 1024)) + "MB)");
 
                 if (fileSize > maxSize) {
-                    System.out.println("❌ ERROR: Imagen demasiado grande");
+                    System.out.println("ERROR: Imagen demasiado grande");
                     redirectAttributes.addFlashAttribute("error", "La imagen no puede superar los 2MB (pesa " +
                             String.format("%.2f", (double) fileSize / (1024 * 1024)) + "MB)");
                     return "redirect:/";
@@ -277,73 +277,6 @@ public class ControladorRutinas {
         }
 
         return "redirect:/";
-    }
-
-    @PostMapping("/cambiarEstado")
-    public String cambiarEstadoEjercicio(@RequestParam Integer idEjercicio, HttpSession sesion) {
-        Ejercicio ejercicio = servicioEjercicio.traerEjercicio(idEjercicio);
-        ejercicio.setCompletado();
-        servicioEjercicio.guardarEjercicio(ejercicio);
-
-        Usuario usuario = (Usuario) sesion.getAttribute("usuario");
-        if (usuario != null) {
-            // FORZAMOS A BD ignorando caché
-            Usuario usuarioActualizado = servicioUsuario.traerUsuarioSinCache(usuario.getId());
-
-            // Inicializar relaciones
-            Hibernate.initialize(usuarioActualizado.getRutinas());
-            for (Rutina rutina : usuarioActualizado.getRutinas()) {
-                Hibernate.initialize(rutina.getEjercicios());
-            }
-
-            sesion.setAttribute("usuario", usuarioActualizado);
-        }
-        return "redirect:/";
-    }
-
-    // Eliminar cookie de última rutina si pulsamos en el boton del formulario de
-    // eliminarla
-    @GetMapping("/eliminar-cookie")
-    public String eliminarCookie(HttpServletResponse response) {
-
-        // para eliminar una cookie creamos tra con el mismo nombre que la que queremos
-        // eliminar
-        Cookie cookie = new Cookie("ultimaRutina", null);// valor null pero no importa (se va a eliminar)
-        cookie.setMaxAge(0); // Eliminamos la cookie poniendo su tiempo de vida a 0
-        response.addCookie(cookie);
-        return "redirect:/";
-    }
-
-    /* open ai */
-    @GetMapping("/chat")
-    public String mostrarChat(Model model, HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        if (usuario == null) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("usuario", usuario);
-        return "chat";
-    }
-
-    @PostMapping("/chat/enviar")
-    public String enviarMensajeChat(@RequestParam String mensaje,
-            HttpSession session,
-            Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        if (usuario == null) {
-            return "redirect:/login";
-        }
-
-        String respuesta = chatService.generarRespuesta(mensaje);
-
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("pregunta", mensaje);
-        model.addAttribute("respuesta", respuesta);
-
-        return "chat";
     }
 
     @PostMapping("/actualizar-imagen-ejercicio")
@@ -420,4 +353,72 @@ public class ControladorRutinas {
 
         return "redirect:/";
     }
+
+    @PostMapping("/cambiarEstado")
+    public String cambiarEstadoEjercicio(@RequestParam Integer idEjercicio, HttpSession sesion) {
+        Ejercicio ejercicio = servicioEjercicio.traerEjercicio(idEjercicio);
+        ejercicio.setCompletado();
+        servicioEjercicio.guardarEjercicio(ejercicio);
+
+        Usuario usuario = (Usuario) sesion.getAttribute("usuario");
+        if (usuario != null) {
+            Usuario usuarioActualizado = servicioUsuario.traerUsuarioSinCache(usuario.getId());
+
+            // Inicializar relaciones
+            Hibernate.initialize(usuarioActualizado.getRutinas());
+            for (Rutina rutina : usuarioActualizado.getRutinas()) {
+                Hibernate.initialize(rutina.getEjercicios());
+            }
+
+            sesion.setAttribute("usuario", usuarioActualizado);
+        }
+        return "redirect:/";
+    }
+
+    // Eliminar cookie de última rutina si pulsamos en el boton del formulario de
+    // eliminarla
+    @GetMapping("/eliminar-cookie")
+    public String eliminarCookie(HttpServletResponse response) {
+
+        // para eliminar una cookie creamos tra con el mismo nombre que la que queremos
+        // eliminar
+        Cookie cookie = new Cookie("ultimaRutina", null);// valor null pero no importa (se va a eliminar)
+        cookie.setMaxAge(0); // Eliminamos la cookie poniendo su tiempo de vida a 0
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+
+    /*PARA MANEJAR CONSULTAS OPEN AI*/
+    @GetMapping("/chat")
+    public String mostrarChat(Model model, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuario", usuario);
+        return "chat";
+    }
+
+    @PostMapping("/chat/enviar")
+    public String enviarMensajeChat(@RequestParam String mensaje,
+            HttpSession session,
+            Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        String respuesta = chatService.generarRespuesta(mensaje);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pregunta", mensaje);
+        model.addAttribute("respuesta", respuesta);
+
+        return "chat";
+    }
+
+    
 }

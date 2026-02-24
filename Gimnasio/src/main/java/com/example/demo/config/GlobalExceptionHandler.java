@@ -5,22 +5,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
 import org.springframework.web.servlet.ModelAndView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/*Para manejar errores imprevisitos */
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    public GlobalExceptionHandler() {
-        logger.info("✅ GlobalExceptionHandler inicializado");
-    }
 
     // Manejador para cualquier excepción inesperada
     @ExceptionHandler(Exception.class)
@@ -39,6 +32,7 @@ public class GlobalExceptionHandler {
         return mav;
     }
 
+    //maneja el error 404
     @ExceptionHandler(NoResourceFoundException.class)
     public ModelAndView handle404(NoResourceFoundException ex) {
         ModelAndView mav = new ModelAndView("error");

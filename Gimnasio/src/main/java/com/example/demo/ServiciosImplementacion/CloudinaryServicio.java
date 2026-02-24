@@ -15,9 +15,9 @@ public class CloudinaryServicio {
     @Autowired
     private Cloudinary cloudinary;
 
-    /**
-     * Sube una imagen a Cloudinary y devuelve la URL segura
-     */
+    
+    // Sube una imagen a Cloudinary y devuelve la URL segura
+     
     public String subirImagen(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), 
             ObjectUtils.asMap(
@@ -29,9 +29,7 @@ public class CloudinaryServicio {
         return (String) uploadResult.get("secure_url");
     }
 
-    /**
-     * Sube una imagen con un nombre personalizado
-     */
+    //Sube una imagen con un nombre personalizado 
     public String subirImagen(MultipartFile file, String nombrePersonalizado) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
             ObjectUtils.asMap(
@@ -42,9 +40,7 @@ public class CloudinaryServicio {
         return (String) uploadResult.get("secure_url");
     }
 
-    /**
-     * Elimina una imagen de Cloudinary por su URL
-     */
+    //Elimina una imagen de Cloudinary por su URL
     public void eliminarImagen(String imageUrl) {
         try {
             // Extraer el public_id de la URL

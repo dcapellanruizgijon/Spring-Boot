@@ -15,8 +15,6 @@ public interface RutinaServicio {
 
     public Rutina getRutinaById(Integer id);
 
-    
-    
-    // public List<Rutina> rutinasDelUsuario(Usuario u);
+
 
 }

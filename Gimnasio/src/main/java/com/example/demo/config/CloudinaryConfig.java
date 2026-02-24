@@ -11,6 +11,7 @@ import java.util.Map;
 @Configuration
 public class CloudinaryConfig {
 
+    /*BUSCA LAS CLAVES Y LO NECESARIO PARA ACCEDER A LA API DE CLOUDINARY */
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
 
@@ -20,6 +21,7 @@ public class CloudinaryConfig {
     @Value("${cloudinary.api-secret}")
     private String apiSecret;
 
+    /* devuelve la respuesta de cloudinary */
     @Bean
     public Cloudinary cloudinary() {
         Map<String, String> config = new HashMap<>();

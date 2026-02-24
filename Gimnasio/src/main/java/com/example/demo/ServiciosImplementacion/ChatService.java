@@ -14,6 +14,7 @@ public class ChatService {
         this.chatModel = chatModel;
     }
 
+    //genera la respuesta de la ia
     public String generarRespuesta(String mensajeUsuario) {
         try {
             Prompt prompt = new Prompt(mensajeUsuario);
