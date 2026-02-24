@@ -286,8 +286,8 @@ public class ControladorRutinas {
             HttpSession session,
             RedirectAttributes redirectAttributes) { // ← AÑADE RedirectAttributes
 
-        System.out.println("\n🔍 === ACTUALIZAR IMAGEN ===");
-        System.out.println("🆔 Ejercicio ID: " + ejercicioId);
+        System.out.println("\n === ACTUALIZAR IMAGEN ===");
+        System.out.println(" Ejercicio ID: " + ejercicioId);
 
         // 🔴 VALIDAR TAMAÑO MANUALMENTE
         if (imagen != null && !imagen.isEmpty()) {
@@ -299,14 +299,14 @@ public class ControladorRutinas {
             if (fileSize > maxSize) {
                 double tamañoMB = (double) fileSize / (1024 * 1024);
                 String mensaje = String.format("La imagen no puede superar los 2MB (pesa %.2fMB)", tamañoMB);
-                System.out.println("❌ ERROR: " + mensaje);
+                System.out.println("ERROR: " + mensaje);
                 redirectAttributes.addFlashAttribute("error", mensaje);
                 return "redirect:/";
             }
 
             // Validar tipo de archivo
             if (!imagen.getContentType().startsWith("image/")) {
-                System.out.println("❌ ERROR: No es una imagen");
+                System.out.println("ERROR: No es una imagen");
                 redirectAttributes.addFlashAttribute("error", "El archivo debe ser una imagen (JPG, PNG, GIF)");
                 return "redirect:/";
             }
@@ -318,16 +318,16 @@ public class ControladorRutinas {
             try {
                 // Si ya tenía imagen, eliminar la anterior de Cloudinary
                 if (ejercicio.getImagenUrl() != null) {
-                    System.out.println("🗑️ Eliminando imagen anterior: " + ejercicio.getImagenUrl());
+                    System.out.println("Eliminando imagen anterior: " + ejercicio.getImagenUrl());
                     cloudinaryServicio.eliminarImagen(ejercicio.getImagenUrl());
                 }
 
                 // Subir nueva imagen
-                System.out.println("⬆️ Subiendo nueva imagen a Cloudinary...");
+                System.out.println("Subiendo nueva imagen a Cloudinary...");
                 String nuevaUrl = cloudinaryServicio.subirImagen(imagen);
                 ejercicio.setImagenUrl(nuevaUrl);
                 servicioEjercicio.guardarEjercicio(ejercicio);
-                System.out.println("✅ Imagen actualizada para ejercicio: " + ejercicio.getNombre());
+                System.out.println("Imagen actualizada para ejercicio: " + ejercicio.getNombre());
 
                 redirectAttributes.addFlashAttribute("exito", "Imagen actualizada correctamente");
 
