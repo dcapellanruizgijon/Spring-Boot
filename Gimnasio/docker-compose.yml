@@ -26,6 +26,14 @@ services:
       SPRING_DATASOURCE_USERNAME: UsuarioAdmin
       SPRING_DATASOURCE_PASSWORD: admin123
 
+      #open ai
+      API_KEY: ${API_KEY}
+
+      #cloudinary
+      CLOUD_NAME: ${CLOUD_NAME}
+      CLOUD_API_KEY: ${CLOUD_API_KEY}
+      CLOUD_API_SECRET: ${CLOUD_API_SECRET}
+
   # MariaDB 
   mariadb:
     image: mariadb:10.11    #iMPORTANTISIMO: aQUI USAMOS UNA IMAGEN, A DIFERENCIA DE LA APLICACIÓN QUE USA el Dockerfile
