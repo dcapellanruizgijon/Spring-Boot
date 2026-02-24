@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.Servicios.EjercicioServicio;
 import com.example.demo.Servicios.RutinaServicio;
@@ -139,21 +140,31 @@ public class ControladorRutinas {
     }
 
     @PostMapping("/registro")
-    public String nuevoRegistro(@RequestParam String nom, @RequestParam String cont, @RequestParam String edad,
-            @RequestParam String peso, @RequestParam String altura) {
-        // asi se parsea un string
-        int ed = Integer.parseInt(edad);
-        double pes = Double.parseDouble(peso);
-        double alt = Double.parseDouble(altura);
-        System.out.println("edad: " + ed);
-        System.out.println("peso: " + pes);
-        System.out.println("altura: " + alt);
-        Usuario u = new Usuario(nom, cont, ed, pes, alt);
+    public String nuevoRegistro(@RequestParam String nom, @RequestParam String cont,
+            @RequestParam String edad, @RequestParam String peso,
+            @RequestParam String altura) {
 
-        // sesion.setAttribute("usuario", u);
-        servicioUsuario.guardarTrabajador(u);// lo guarda con la contraseña encriptada (metodo creado en el
-                                             // usuarioServicio)
-        return "redirect:/login?registro=true";// redirigimos al login
+        try {
+            int ed = Integer.parseInt(edad);
+            double pes = Double.parseDouble(peso);
+            double alt = Double.parseDouble(altura);
+
+            Usuario u = new Usuario(nom, cont, ed, pes, alt);
+
+            // Mejora 1: Manejar null explícitamente
+            Usuario usuarioExistente = servicioUsuario.buscarPorNombre(u.getNombre());
+
+            if (usuarioExistente != null) {
+                return "redirect:/login?registro=false&error=usuario_existe";
+            } else {
+                servicioUsuario.guardarTrabajador(u);
+                return "redirect:/login?registro=true";
+            }
+
+        } catch (NumberFormatException e) {
+            // Mejora 2: Manejar errores de parseo
+            return "redirect:/registro?error=formato_invalido";
+        }
     }
 
     // COmentado porque lo hce spring security
@@ -188,7 +199,6 @@ public class ControladorRutinas {
             cookie.setPath("/");
             cookie.setHttpOnly(false);
 
-
             // enviamos la cookie al servidor para que sea almacenada(gracias al objeto
             // HttpServletResponse)
             // IMPORTANTE: httpServletResponse es un objeto que lleva contenido al cliente
@@ -220,33 +230,50 @@ public class ControladorRutinas {
     public String agregarEjercicio(
             @RequestParam String nombreEjercicio,
             @RequestParam int rutinaIndex,
-            @RequestParam(value = "imagen", required = false) MultipartFile imagen, // 🔴 NUEVO
-            HttpSession session) throws IOException {
+            @RequestParam(value = "imagen", required = false) MultipartFile imagen,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
         if (usuario != null && rutinaIndex >= 0 && rutinaIndex < usuario.getRutinas().size()) {
 
-            Rutina rutina = usuario.getRutinas().get(rutinaIndex);
-
-            // Crear el ejercicio
-            Ejercicio ej = new Ejercicio(nombreEjercicio, rutina);
-
-            // 🔴 Si hay imagen, subirla a Cloudinary
+            // VALIDAR TAMAÑO 
             if (imagen != null && !imagen.isEmpty()) {
-                try {
-                    String imagenUrl = cloudinaryServicio.subirImagen(imagen);
-                    ej.setImagenUrl(imagenUrl);
-                    System.out.println("✅ Imagen subida para ejercicio: " + nombreEjercicio);
-                } catch (Exception e) {
-                    System.out.println("❌ Error al subir imagen: " + e.getMessage());
-                    // El ejercicio se crea igual aunque falle la imagen
+                long maxSize = 2 * 1024 * 1024; // 2MB en bytes
+                long fileSize = imagen.getSize();
+
+                System.out
+                        .println("📸 Tamaño de imagen: " + fileSize + " bytes (" + (fileSize / (1024 * 1024)) + "MB)");
+
+                if (fileSize > maxSize) {
+                    System.out.println("❌ ERROR: Imagen demasiado grande");
+                    redirectAttributes.addFlashAttribute("error", "La imagen no puede superar los 2MB (pesa " +
+                            String.format("%.2f", (double) fileSize / (1024 * 1024)) + "MB)");
+                    return "redirect:/";
                 }
             }
 
-            // Guardar en BD
-            servicioEjercicio.guardarEjercicio(ej);
-            rutina.agregarEjercicio(ej);
+            // Resto del código igual...
+            try {
+                Rutina rutina = usuario.getRutinas().get(rutinaIndex);
+                Ejercicio ej = new Ejercicio(nombreEjercicio, rutina);
+
+                if (imagen != null && !imagen.isEmpty()) {
+                    String imagenUrl = cloudinaryServicio.subirImagen(imagen);
+                    ej.setImagenUrl(imagenUrl);
+                }
+
+                servicioEjercicio.guardarEjercicio(ej);
+                rutina.agregarEjercicio(ej);
+
+                redirectAttributes.addFlashAttribute("exito", "Ejercicio agregado correctamente");
+
+            } catch (Exception e) {
+                System.out.println("❌ Error inesperado: " + e.getMessage());
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute("error", "Error al agregar ejercicio: " + e.getMessage());
+            }
         }
 
         return "redirect:/";
@@ -323,7 +350,34 @@ public class ControladorRutinas {
     public String actualizarImagenEjercicio(
             @RequestParam Integer ejercicioId,
             @RequestParam("imagen") MultipartFile imagen,
-            HttpSession session) throws IOException {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) { // ← AÑADE RedirectAttributes
+
+        System.out.println("\n🔍 === ACTUALIZAR IMAGEN ===");
+        System.out.println("🆔 Ejercicio ID: " + ejercicioId);
+
+        // 🔴 VALIDAR TAMAÑO MANUALMENTE
+        if (imagen != null && !imagen.isEmpty()) {
+            long maxSize = 2 * 1024 * 1024; // 2MB
+            long fileSize = imagen.getSize();
+
+            System.out.println("📸 Tamaño imagen: " + fileSize + " bytes (" + (fileSize / (1024 * 1024)) + "MB)");
+
+            if (fileSize > maxSize) {
+                double tamañoMB = (double) fileSize / (1024 * 1024);
+                String mensaje = String.format("La imagen no puede superar los 2MB (pesa %.2fMB)", tamañoMB);
+                System.out.println("❌ ERROR: " + mensaje);
+                redirectAttributes.addFlashAttribute("error", mensaje);
+                return "redirect:/";
+            }
+
+            // Validar tipo de archivo
+            if (!imagen.getContentType().startsWith("image/")) {
+                System.out.println("❌ ERROR: No es una imagen");
+                redirectAttributes.addFlashAttribute("error", "El archivo debe ser una imagen (JPG, PNG, GIF)");
+                return "redirect:/";
+            }
+        }
 
         Ejercicio ejercicio = servicioEjercicio.traerEjercicio(ejercicioId);
 
@@ -331,20 +385,23 @@ public class ControladorRutinas {
             try {
                 // Si ya tenía imagen, eliminar la anterior de Cloudinary
                 if (ejercicio.getImagenUrl() != null) {
+                    System.out.println("🗑️ Eliminando imagen anterior: " + ejercicio.getImagenUrl());
                     cloudinaryServicio.eliminarImagen(ejercicio.getImagenUrl());
                 }
 
                 // Subir nueva imagen
+                System.out.println("⬆️ Subiendo nueva imagen a Cloudinary...");
                 String nuevaUrl = cloudinaryServicio.subirImagen(imagen);
                 ejercicio.setImagenUrl(nuevaUrl);
                 servicioEjercicio.guardarEjercicio(ejercicio);
                 System.out.println("✅ Imagen actualizada para ejercicio: " + ejercicio.getNombre());
 
-                // 🔴 ACTUALIZAR SESIÓN para que la vista se refresque
+                redirectAttributes.addFlashAttribute("exito", "Imagen actualizada correctamente");
+
+                // Actualizar sesión
                 Usuario usuario = (Usuario) session.getAttribute("usuario");
                 if (usuario != null) {
                     Usuario usuarioActualizado = servicioUsuario.traerUsuario(usuario.getId());
-                    // Inicializar relaciones
                     Hibernate.initialize(usuarioActualizado.getRutinas());
                     for (Rutina rutina : usuarioActualizado.getRutinas()) {
                         Hibernate.initialize(rutina.getEjercicios());
@@ -354,10 +411,13 @@ public class ControladorRutinas {
 
             } catch (Exception e) {
                 System.out.println("❌ Error al actualizar imagen: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error", "Error al subir la imagen: " + e.getMessage());
             }
+        } else {
+            System.out.println("❌ Ejercicio no encontrado o imagen vacía");
+            redirectAttributes.addFlashAttribute("error", "No se pudo actualizar la imagen");
         }
 
         return "redirect:/";
     }
-
 }

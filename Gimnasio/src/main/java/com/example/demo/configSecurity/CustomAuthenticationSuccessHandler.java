@@ -23,46 +23,51 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     private UsuarioServicio usuarioServicio;
 
+    @Autowired
+    private HttpSession session;
+
     @Override
-    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
         String username = authentication.getName();
 
-        // Buscar el usuario en la base de datosy le mete ya las rutinas antes de
-        // guardarlo en las sesion
-        Usuario usuarioBasico = usuarioServicio.buscarPorNombre(username);
+        // ✅ AHORA USA EL MÉTODO CORRECTO que carga todo
+        Usuario usuarioCompleto = usuarioServicio.buscarUsuarioCompletoPorNombre(username);
 
-        if (usuarioBasico != null) {
-            // Obtener el usuario completo con todas sus relaciones
-            Usuario usuarioCompleto = usuarioServicio.traerUsuarioConTodo(usuarioBasico.getId());
-
+        if (usuarioCompleto != null) {
+            // Desproxificar y guardar en sesión
             Usuario usuarioLimpio = desproxificarUsuario(usuarioCompleto);
-
-            // Guardar el usuario completo en la sesión
-            HttpSession session = request.getSession();
             session.setAttribute("usuario", usuarioLimpio);
+            System.out.println("✅ Usuario guardado en sesión: " + username);
         }
 
-        // Redirigir a la página principal
         response.sendRedirect("/");
     }
 
     private Usuario desproxificarUsuario(Usuario usuario) {
-        org.hibernate.Hibernate.unproxy(usuario);
+        // Desproxificar el usuario principal y ASIGNAR el resultado
+        usuario = (Usuario) org.hibernate.Hibernate.unproxy(usuario);
 
+        // Desproxificar rutinas
         if (usuario.getRutinas() != null) {
-            for (Rutina rutina : usuario.getRutinas()) {
-                org.hibernate.Hibernate.unproxy(rutina);
-                if (rutina.getEjercicios() != null) {
-                    for (Ejercicio ejercicio : rutina.getEjercicios()) {
-                        org.hibernate.Hibernate.unproxy(ejercicio);
+            for (int i = 0; i < usuario.getRutinas().size(); i++) {
+                Rutina rutina = usuario.getRutinas().get(i);
+                Rutina rutinaLimpia = (Rutina) org.hibernate.Hibernate.unproxy(rutina);
+                usuario.getRutinas().set(i, rutinaLimpia);
+
+                // Desproxificar ejercicios
+                if (rutinaLimpia.getEjercicios() != null) {
+                    for (int j = 0; j < rutinaLimpia.getEjercicios().size(); j++) {
+                        Ejercicio ejercicio = rutinaLimpia.getEjercicios().get(j);
+                        Ejercicio ejercicioLimpio = (Ejercicio) org.hibernate.Hibernate.unproxy(ejercicio);
+                        rutinaLimpia.getEjercicios().set(j, ejercicioLimpio);
                     }
                 }
             }
         }
+
         return usuario;
     }
 

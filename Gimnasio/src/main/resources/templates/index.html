@@ -3,315 +3,692 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Fast Rutinas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Rutinas - Tu gestor de ejercicios</title>
+
+    <!-- Google Fonts para tipografía moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome para iconos profesionales -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #2d3436;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1.5rem;
         }
 
+        /* Header principal */
         h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #0984e3, #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
             text-align: center;
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
+            letter-spacing: -1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .section {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
-
-        .seccion {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
+        /* Tarjeta de bienvenida */
+        .container-bienvenida {
             background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
 
-        button {
-            margin: 5px;
-            padding: 8px 12px;
-            background: #2196F3;
-            color: white;
+        .container-bienvenida::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #00b894, #0984e3, #6c5ce7);
+        }
+
+        .container-bienvenida h2 {
+            font-size: 2rem;
+            color: #2d3436;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container-bienvenida h3 {
+            font-size: 1.2rem;
+            color: #636e72;
+            margin: 0.8rem 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container-bienvenida h3 span {
+            color: #0984e3;
+            font-weight: 700;
+            background: #e3f2fd;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+        }
+
+        /* Cookie info */
+        .cookie-info {
+            background: #f1f8fe;
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0984e3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cookie-info p {
+            font-size: 1rem;
+            color: #2d3436;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Botones */
+        button,
+        .button {
+            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 3px;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        button i,
+        .button i {
+            font-size: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #0984e3, #6c5ce7);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #d63031, #e17055);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #fdcb6e, #ffeaa7);
+            color: #2d3436;
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #0984e3, #74b9ff);
+            color: white;
+        }
+
+        .btn-chat {
+            background: linear-gradient(45deg, #6c5ce7, #a8a5e6);
+            color: white;
         }
 
         .cerrarSesion {
-            background: #f44336;
+            background: #ff7675;
+            color: white;
         }
 
-        input[type="text"] {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            width: 250px;
-        }
-
-        .ejercicio {
-            margin: 10px 0;
-            padding: 10px;
+        /* Secciones */
+        .section {
             background: white;
-            border-left: 3px solid #4CAF50;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .completado {
-            background: #e8f5e8;
-            border-left-color: #2E7D32;
-            text-decoration: line-through;
+        .section h2 {
+            font-size: 1.8rem;
+            color: #2d3436;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 1rem;
         }
 
-        h2 {
-            color: #333;
-            border-bottom: 1px solid #2196F3;
-            padding-bottom: 5px;
+        .section h2 i {
+            color: #0984e3;
+            font-size: 1.8rem;
         }
 
-        h3 {
-            color: #555;
-            margin-bottom: 10px;
+        /* Formulario crear rutina */
+        .section form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
-        p {
-            margin: 5px 0;
-            color: #666;
+        .section input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
 
-        strong {
-            color: #333;
+        .section input[type="text"]:focus {
+            outline: none;
+            border-color: #0984e3;
+            box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.1);
+        }
+
+        /* Tarjeta de rutina */
+        .rutina-container {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .rutina-container:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #0984e3;
+        }
+
+        .rutina-container h3 {
+            font-size: 1.5rem;
+            color: #2d3436;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .rutina-container h3 i {
+            color: #00b894;
+            font-size: 1.5rem;
+        }
+
+        /* Formulario agregar ejercicio */
+        .rutina-container>div:first-of-type {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .rutina-container form[action="/agregar-ejercicio"] {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .rutina-container form[action="/agregar-ejercicio"]>div {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rutina-container form[action="/agregar-ejercicio"] input[type="text"] {
+            flex: 2;
+            min-width: 200px;
+            padding: 0.8rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .rutina-container form[action="/agregar-ejercicio"] input[type="file"] {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.5rem;
+            border: 1px dashed #b2bec3;
+            border-radius: 8px;
+            background: #f1f3f5;
+        }
+
+        .rutina-container small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        /* Ejercicios */
+        .ejercicio {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .ejercicio:hover {
+            transform: translateX(5px);
+            border-color: #0984e3;
+        }
+
+        .ejercicio.completado {
+            background: #f0f9f4;
+            border-left: 4px solid #00b894;
+        }
+
+        .ejercicio>div {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Imagen del ejercicio */
+        .ejercicio>div>div:first-child {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #dfe6e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .ejercicio img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Información del ejercicio */
+        .ejercicio>div>div:nth-child(2) {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .ejercicio strong {
+            color: #2d3436;
+            font-size: 1.2rem;
+        }
+
+        .estado-pendiente {
+            background: #ffeaa7;
+            color: #2d3436;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .estado-completado {
+            background: #00b894;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Footer del ejercicio (cambiar imagen) */
+        .ejercicio-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .ejercicio-footer form {
+            display: inline-block;
+        }
+
+        .btn-imagen {
+            background: #dfe6e9;
+            color: #2d3436;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-imagen:hover {
+            background: #b2bec3;
+            transform: translateY(-2px);
+        }
+
+        /* Mensajes vacíos */
+        .empty-message {
+            text-align: center;
+            padding: 2.5rem;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            background: #f8f9fa;
+            border-radius: 16px;
+            border: 2px dashed #dfe6e9;
+        }
+
+        .empty-message i {
+            font-size: 3rem;
+            color: #b2bec3;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container-bienvenida h2 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                width: 100%;
+            }
+
+            .button-group button {
+                flex: 1;
+            }
+
+            .ejercicio>div {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .ejercicio>div>div:first-child {
+                width: 100%;
+                height: 150px;
+            }
+
+            .rutina-container>div:first-of-type {
+                flex-direction: column;
+            }
+
+            .rutina-container form[action="/eliminarRutina"] {
+                margin-left: 0;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .rutina-container {
-            background: white;
-            border: 1px solid #FF6B6B;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px 0;
+            animation: slideIn 0.5s ease forwards;
         }
 
-        .cookie-info {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 3px;
-            margin: 10px 0;
-            border-left: 3px solid #2196F3;
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
 
-        .container-bienvenida {
-            background: #f5f5f5;
-            padding: 15px;
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #0984e3, #6c5ce7);
             border-radius: 5px;
-            text-align: center;
-            margin: 10px 0;
         }
-        
-        /* Estilo para el botón de imagen */
-        .btn-imagen {
-            background: #2196F3;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        
-        .ejercicio-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 5px;
-            border-top: 1px dashed #ccc;
-            padding-top: 5px;
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #0873c4, #5d4ac7);
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>FAST RUTINAS</h1>
+        <h1><i class="fas fa-dumbbell" style="background: none; -webkit-text-fill-color: #0984e3;"></i> FAST RUTINAS
+        </h1>
 
         <!-- Información del usuario y cookies -->
         <div class="container-bienvenida">
-            <h2>Bienvenido: <span th:text="${usuario.nombre}"></span>!</h2>
-            <!--se usa para formatear el resultado (minimo 1 decimal maximo 2)-->
-            <h3>Este es tu indice de masa corporal: <span
-                    th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span>!</h3>
-            <h3>Este es tu rango segun tu indice de masa corporal: <span
-                    th:text="${usuario.obtenerCategoriaIMC()}"></span>!</h3>
+            <h2><i class="fas fa-user-circle"></i> ¡Bienvenido, <span th:text="${usuario.nombre}"></span>!</h2>
+            <!-- Mostrar mensajes de error (se mostrarán en la misma página) -->
+            <div th:if="${error}"
+                style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin: 10px 0; border: 1px solid #f5c6cb; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">⚠️</span>
+                <span style="flex-grow: 1;" th:text="${error}">Error</span>
+                <button onclick="this.parentElement.style.display='none'"
+                    style="background: none; border: none; color: #721c24; cursor: pointer; font-size: 18px;">✖</button>
+            </div>
+
+            <!-- Mostrar mensajes de éxito -->
+            <div th:if="${exito}"
+                style="background: #d4edda; color: #155724; padding: 12px; border-radius: 5px; margin: 10px 0; border: 1px solid #c3e6cb; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">✅</span>
+                <span style="flex-grow: 1;" th:text="${exito}">Éxito</span>
+                <button onclick="this.parentElement.style.display='none'"
+                    style="background: none; border: none; color: #155724; cursor: pointer; font-size: 18px;">✖</button>
+            </div>
+
+            <h3><i class="fas fa-calculator"></i> IMC: <span
+                    th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span></h3>
+            <h3><i class="fas fa-chart-line"></i> Categoría: <span th:text="${usuario.obtenerCategoriaIMC()}"></span>
+            </h3>
 
             <!-- Mostrar cookie de última rutina -->
             <div class="cookie-info">
-                <p><strong th:text="${ultimaRutina}"></strong></p>
+                <p><i class="fas fa-cookie-bite"></i> <strong th:text="${ultimaRutina}"></strong></p>
+                <div class="button-group">
+                    <a href="/eliminar-cookie">
+                        <button class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> Eliminar Cookie
+                        </button>
+                    </a>
 
-                <!-- Enlace para eliminar la cookie -->
-                <a href="/eliminar-cookie">
-                    <button style="background: #FF6B6B;">Eliminar Cookie</button>
-                </a>
+                    <a href="/cerrarSesion">
+                        <button class="btn-warning">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
+                    </a>
+
+                    <a href="/chat">
+                        <button class="btn-chat">
+                            <i class="fas fa-robot"></i> Chat IA
+                        </button>
+                    </a>
+                </div>
+
             </div>
-
-            <!-- Botón para cerrar sesión -->
-            <a href="/cerrarSesion">
-                <button class="cerrarSesion">Cerrar Sesión</button>
-            </a>
-
-            <a href="/chat" style="margin-left: 10px;">
-                <button
-                    style="background: #667eea; color: white; padding: 8px 12px; border: none; border-radius: 3px; cursor: pointer;">
-                    💬 Chat IA
-                </button>
-            </a>
         </div>
 
-        <!-- Creamos una nueva rutina y le damos un nombre (el formulario se va al controlador)-->
+        <!-- Crear nueva rutina -->
         <div class="section">
-            <h2>Crear Nueva Rutina</h2>
+            <h2><i class="fas fa-plus-circle"></i> Crear Nueva Rutina</h2>
             <form action="/crear-rutina" method="post">
-                <input type="text" name="nombre" required>
-                <button type="submit" style="background: #4CAF50;">Crear Rutina</button>
+                <input type="text" name="nombre" placeholder="Ej: Rutina de piernas, Full body..." required>
+                <button type="submit" class="btn-success">
+                    <i class="fas fa-plus"></i> Crear Rutina
+                </button>
             </form>
         </div>
 
-        <!-- Lista de rutinas del usuario -->
+        <!-- Lista de rutinas -->
         <div class="section">
-            <h2>Mis Rutinas</h2>
+            <h2><i class="fas fa-list"></i> Mis Rutinas</h2>
 
-            <!--Si el array de rutinas del usuario está vacia Muestra este mensaje-->
-            <div th:if="${usuario.rutinas.empty}" style="text-align: center; padding: 20px; color: #666;">
+            <!-- Si no hay rutinas -->
+            <div th:if="${usuario.rutinas.empty}" class="empty-message">
+                <i class="fas fa-clipboard-list"></i>
                 <p>No tienes rutinas creadas. ¡Crea tu primera rutina arriba!</p>
             </div>
 
-            <!-- Recorre cada rutina del usuario -->
+            <!-- Recorrer rutinas -->
             <div th:each="rutina, rutinaStatus : ${usuario.rutinas}">
                 <div class="rutina-container">
-                    <h3 th:text="${rutina.nombre}"></h3>
+                    <h3><i class="fas fa-folder"></i> <span th:text="${rutina.nombre}"></span></h3>
 
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                        <!-- Formulario para agregar ejercicio con imagen -->
-                        <form action="/agregar-ejercicio" method="post" enctype="multipart/form-data"
-                            style="display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px; flex: 2; min-width: 300px;">
-
+                    <div>
+                        <!-- Formulario agregar ejercicio -->
+                        <form action="/agregar-ejercicio" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
 
-                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                <input type="text" name="nombreEjercicio" placeholder="Nombre del ejercicio" required
-                                    style="padding: 8px; flex: 2; min-width: 200px;">
-
-                                <input type="file" name="imagen" accept="image/*" style="padding: 5px; flex: 1; min-width: 150px;">
-
-                                <button type="submit"
-                                    style="background: #FF9800; padding: 8px 15px; white-space: nowrap;">
-                                    Agregar Ejercicio
+                            <div>
+                                <input type="text" name="nombreEjercicio" placeholder="Nombre del ejercicio" required>
+                                <input type="file" name="imagen" accept="image/*">
+                                <button type="submit" class="btn-warning">
+                                    <i class="fas fa-plus-circle"></i> Agregar
                                 </button>
                             </div>
-
-                            <small style="color: #666;">Formatos: JPG, PNG, GIF (máx 5MB) - Opcional</small>
+                            <small><i class="fas fa-info-circle"></i> Formatos: JPG, PNG, GIF (máx 1MB)</small>
                         </form>
 
-                        <!-- Formulario de eliminar rutina -->
-                        <form action="/eliminarRutina" method="post" style="flex: 0; margin-left: auto;">
+                        <!-- Botón eliminar rutina -->
+                        <form action="/eliminarRutina" method="post">
                             <input type="hidden" name="rutinaId" th:value="${rutina.id}">
                             <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
-                            <button type="submit" style="background: #c9363d; height: 40px;">Eliminar Rutina</button>
+                            <button type="submit" class="btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar Rutina
+                            </button>
                         </form>
                     </div>
 
-                    <!-- Si la rutina aun no tiene ejercicio muestra este div-->
-                    <div th:if="${rutina.ejercicios.empty}" style="text-align: center; padding: 15px; color: #888;">
+                    <!-- Si la rutina no tiene ejercicios -->
+                    <div th:if="${rutina.ejercicios.empty}" class="empty-message"
+                        style="margin: 1rem 0; padding: 1.5rem;">
+                        <i class="fas fa-exercise" style="font-size: 2rem;"></i>
                         <p>Esta rutina no tiene ejercicios. ¡Agrega algunos!</p>
                     </div>
 
-                    <!-- Lista de ejercicios de la rutina -->
-                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                        
-                        <!-- Div condicional según estado (solo para el contenido principal) -->
-                        <div th:if="${ejercicio.completado}" class="ejercicio completado" style="margin-bottom: 5px;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <!-- Mostrar imagen si existe -->
-                                <div th:if="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0;">
-                                    <img th:src="${ejercicio.imagenUrl}"
-                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
-                                </div>
-                                <!-- Icono placeholder si no hay imagen -->
-                                <div th:unless="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0; 
-                                    background: #e0e0e0; border-radius: 5px; 
-                                    display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                    💪
+                    <!-- Lista de ejercicios -->
+                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}">
+
+                        <!-- Ejercicio COMPLETADO -->
+                        <div th:if="${ejercicio.completado}" class="ejercicio completado">
+                            <div>
+                                <!-- Imagen o placeholder -->
+                                <div>
+                                    <img th:if="${ejercicio.imagenUrl}" th:src="${ejercicio.imagenUrl}" alt="Ejercicio">
+                                    <i th:unless="${ejercicio.imagenUrl}" class="fas fa-dumbbell"
+                                        style="font-size: 2rem;"></i>
                                 </div>
 
-                                <!-- Información del ejercicio -->
-                                <div style="flex-grow: 1;">
-                                    <strong th:text="${ejercicio.nombre}"></strong> -
-                                    Estado: COMPLETADO
+                                <!-- Información -->
+                                <div>
+                                    <strong><i class="fas fa-check-circle" style="color: #00b894;"></i> <span
+                                            th:text="${ejercicio.nombre}"></span></strong>
+                                    <span class="estado-completado">COMPLETADO</span>
                                 </div>
 
                                 <!-- Botón cambiar estado -->
-                                <form action="/cambiarEstado" method="post" style="display: inline;">
+                                <form action="/cambiarEstado" method="post">
                                     <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
-                                    <input type="submit" value="Marcar pendiente" 
-                                        style="background: #f44336; color: white; border: none; 
-                                        padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                    <button type="submit" class="btn-warning">
+                                        <i class="fas fa-undo"></i> Marcar pendiente
+                                    </button>
                                 </form>
                             </div>
                         </div>
 
-                        <div th:unless="${ejercicio.completado}" class="ejercicio" style="margin-bottom: 5px;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <!-- Mostrar imagen si existe -->
-                                <div th:if="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0;">
-                                    <img th:src="${ejercicio.imagenUrl}"
-                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
-                                </div>
-                                <!-- Icono por si no hay imagen -->
-                                <div th:unless="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0; 
-                                    background: #e0e0e0; border-radius: 5px; 
-                                    display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                    💪
+                        <!-- Ejercicio PENDIENTE -->
+                        <div th:unless="${ejercicio.completado}" class="ejercicio">
+                            <div>
+                                <!-- Imagen o placeholder -->
+                                <div>
+                                    <img th:if="${ejercicio.imagenUrl}" th:src="${ejercicio.imagenUrl}" alt="Ejercicio">
+                                    <i th:unless="${ejercicio.imagenUrl}" class="fas fa-dumbbell"
+                                        style="font-size: 2rem; color: #636e72;"></i>
                                 </div>
 
-                                <!-- Información del ejercicio -->
-                                <div style="flex-grow: 1;">
-                                    <strong th:text="${ejercicio.nombre}"></strong> -
-                                    Estado: PENDIENTE
+                                <!-- Información -->
+                                <div>
+                                    <strong><i class="far fa-circle" style="color: #fdcb6e;"></i> <span
+                                            th:text="${ejercicio.nombre}"></span></strong>
+                                    <span class="estado-pendiente">PENDIENTE</span>
                                 </div>
 
                                 <!-- Botón cambiar estado -->
-                                <form action="/cambiarEstado" method="post" style="display: inline;">
+                                <form action="/cambiarEstado" method="post">
                                     <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
-                                    <input type="submit" value="Marcar completado" 
-                                        style="background: #4CAF50; color: white; border: none; 
-                                        padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                    <button type="submit" class="btn-success">
+                                        <i class="fas fa-check"></i> Marcar completado
+                                    </button>
                                 </form>
                             </div>
                         </div>
-                        
-                        <!-- 🔴 FORMULARIO DE IMAGEN (UNA SOLA VEZ por ejercicio, FUERA de los condicionales) -->
+
+                        <!-- Formulario cambiar imagen -->
                         <div class="ejercicio-footer">
-                            <form action="/actualizar-imagen-ejercicio" method="post" enctype="multipart/form-data"
-                                  style="display: inline-block;">
+                            <form action="/actualizar-imagen-ejercicio" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="ejercicioId" th:value="${ejercicio.id}">
-                                <input type="file" name="imagen" accept="image/*" style="display: none;"
-                                       th:id="'file-' + ${ejercicio.id}" onchange="this.form.submit()">
+                                <input type="file" name="imagen" accept="image/*" th:id="'file-' + ${ejercicio.id}"
+                                    style="display: none;" onchange="this.form.submit()">
                                 <button type="button" th:onclick="'seleccionarImagen(' + ${ejercicio.id} + ')'"
-                                        class="btn-imagen">
-                                    📷 Cambiar imagen
+                                    class="btn-imagen">
+                                    <i class="fas fa-camera"></i> Cambiar imagen
                                 </button>
                             </form>
                         </div>

@@ -1,20 +1,341 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Error</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Rutinas - Error</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        .error-container { text-align: center; margin-top: 50px; }
-        .mensaje { color: #f44336; font-size: 20px; }
-        .detalle { color: #666; margin: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Elementos decorativos de fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 99, 99, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 144, 104, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tarjeta de error */
+        .error-card {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Icono de error animado */
+        .error-icon {
+            font-size: 5rem;
+            color: #ff6b6b;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Código de error */
+        .error-code {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            background: #fff5f5;
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* Título */
+        h1 {
+            font-size: 2.2rem;
+            color: #2d3436;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Mensaje principal */
+        .mensaje {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Detalle del error */
+        .detalle {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            color: #636e72;
+            font-size: 1rem;
+            border-left: 4px solid #ff6b6b;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            word-break: break-word;
+        }
+
+        /* Sugerencias */
+        .sugerencias {
+            text-align: left;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f0f9ff;
+            border-radius: 15px;
+        }
+
+        .sugerencias p {
+            color: #2d3436;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sugerencias p i {
+            color: #0984e3;
+        }
+
+        .sugerencias ul {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .sugerencias li {
+            color: #636e72;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sugerencias li i {
+            color: #00b894;
+            font-size: 0.9rem;
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #0984e3, #6c5ce7);
+            color: white;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(9, 132, 227, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f1f3f5;
+            color: #2d3436;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .btn-home {
+            background: transparent;
+            color: #636e72;
+            border: 2px solid #e9ecef;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-home:hover {
+            border-color: #0984e3;
+            color: #0984e3;
+            background: #f0f9ff;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .error-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
-<body>
-    <!-- $mensaje lo coge de /cofig/GlobalException -->
-    <div class="error-container">
-        <h1>Algo salió mal</h1>
-        <p class="mensaje" th:text="${mensaje}"></p>
-        <p class="detalle" th:text="${detalle}"></p>
-        <a href="/"><button>Volver al inicio</button></a>
-    </div>
-</body>
+    <body>
+        <div class="container">
+            <div class="error-card">
+                <!-- Icono animado -->
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+
+                <!-- Código de error -->
+                <div class="error-code">
+                    <i class="fas fa-code"></i> ERROR
+                </div>
+
+                <!-- Título -->
+                <h1>¡Algo salió mal!</h1>
+
+                <!-- Mensaje principal -->
+                <p class="mensaje" th:text="${mensaje}"></p>
+
+                <!-- Detalle del error (solo se muestra si hay detalle) -->
+                <div th:if="${detalle}" class="detalle">
+                    <i class="fas fa-bug" style="margin-right: 0.5rem; color: #ff6b6b;"></i>
+                    <span th:text="${detalle}"></span>
+                </div>
+
+                <!-- Sugerencias útiles -->
+                <div class="sugerencias">
+                    <p>
+                        <i class="fas fa-lightbulb"></i>
+                        Sugerencias:
+                    </p>
+                    <ul>
+                        <li>
+                            <i class="fas fa-undo-alt"></i>
+                            Volver a intentar la operación
+                        </li>
+                        <li>
+                            <i class="fas fa-sync-alt"></i>
+                            Recargar la página
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            Contactar con soporte si el problema persiste
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="action-buttons">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home"></i>
+                        Ir al inicio
+                    </a>
+                    
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver atrás
+                    </a>
+                    
+                    <a href="javascript:location.reload()" class="btn btn-home">
+                        <i class="fas fa-redo-alt"></i>
+                        Reintentar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    
+    </body>
 </html>

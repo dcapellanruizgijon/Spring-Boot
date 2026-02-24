@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Repositorios.UsuarioRepository;
 import com.example.demo.Servicios.UsuarioServicio;
+import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
@@ -64,7 +67,7 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     @Cacheable(value = "usuariosBasicos", key = "#nombre")
     public Usuario buscarPorNombre(String nombre) {
         System.out.println(" CONSULTANDO BBDD (básico) para: " + nombre);
-        return repo.findByNombre(nombre);
+        return repo.findByNombre(   nombre);
     }
 
     @Override
@@ -80,6 +83,31 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     public Usuario traerUsuarioSinCache(Integer idUsuario) {
         System.out.println(" CONSULTANDO BBDD (SIN CACHÉ) para usuario ID: " + idUsuario);
         return repo.findById(idUsuario).get();
+    }
+
+    @Override
+    @Cacheable(value = "usuariosCompletosPorNombre", key = "#nombre")
+    @Transactional
+    public Usuario buscarUsuarioCompletoPorNombre(String nombre) {
+        System.out.println("🔴 CARGANDO usuario COMPLETO desde BBDD (por nombre): " + nombre);
+
+        // Primero busca por nombre
+        Usuario usuario = repo.findByNombre(nombre);
+
+        if (usuario != null) {
+            // FUERZA la carga de todas las relaciones
+            usuario.getRutinas().size(); // Carga las rutinas
+
+            // Opcional: si quieres también cargar los ejercicios de cada rutina
+            for (Rutina rutina : usuario.getRutinas()) {
+                rutina.getEjercicios().size(); // Carga los ejercicios
+            }
+
+            System.out.println("✅ Usuario completo cargado: " + nombre +
+                    " (rutinas: " + usuario.getRutinas().size() + ")");
+        }
+
+        return usuario;
     }
 
 }

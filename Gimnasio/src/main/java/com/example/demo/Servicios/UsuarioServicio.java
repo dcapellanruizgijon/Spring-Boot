@@ -23,4 +23,6 @@ public interface UsuarioServicio {
     public Usuario traerUsuarioConTodo(Integer id);
 
     public Usuario traerUsuarioSinCache(Integer idUsuario);
+
+    public Usuario buscarUsuarioCompletoPorNombre(String nombre);
 }
