@@ -43,7 +43,7 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutUrl("/cerrarSesion")// Mantiene nuestro endpoint
                 .logoutSuccessUrl("/login?logout=true")// Redirige al login tras logout
-                .deleteCookies("JSESSIONID", "ultimaRutina")
+                .deleteCookies("JSESSIONID")//no eliminamos la cookie ultima rutina, solo la sessión
                 .invalidateHttpSession(true)
                 .permitAll()
             )

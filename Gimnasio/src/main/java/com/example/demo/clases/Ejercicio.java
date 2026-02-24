@@ -28,6 +28,9 @@ public class Ejercicio {
     @JoinColumn(name = "rutina_id")//nombre que se le dará a la columna
     @JsonIgnore //para evitar el bucle infinito con swager
     private Rutina r;
+
+    @Column(name = "imagen_url", length = 500)
+    private String imagenUrl;
     
     public Ejercicio(String nombre, Rutina r) {
         this.nombre = nombre;
@@ -68,5 +71,13 @@ public class Ejercicio {
     public Rutina getR() {
         return r;
     }
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    
     
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+    <style>
+        .error-container { text-align: center; margin-top: 50px; }
+        .mensaje { color: #f44336; font-size: 20px; }
+        .detalle { color: #666; margin: 20px; }
+    </style>
+</head>
+<body>
+    <!-- $mensaje lo coge de /cofig/GlobalException -->
+    <div class="error-container">
+        <h1>Algo salió mal</h1>
+        <p class="mensaje" th:text="${mensaje}"></p>
+        <p class="detalle" th:text="${detalle}"></p>
+        <a href="/"><button>Volver al inicio</button></a>
+    </div>
+</body>
+</html>

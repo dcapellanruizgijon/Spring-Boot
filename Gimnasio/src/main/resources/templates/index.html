@@ -121,6 +121,26 @@
             text-align: center;
             margin: 10px 0;
         }
+        
+        /* Estilo para el botón de imagen */
+        .btn-imagen {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .ejercicio-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+            border-top: 1px dashed #ccc;
+            padding-top: 5px;
+        }
     </style>
 </head>
 
@@ -131,7 +151,7 @@
         <!-- Información del usuario y cookies -->
         <div class="container-bienvenida">
             <h2>Bienvenido: <span th:text="${usuario.nombre}"></span>!</h2>
-            <!--#se usa para formatear el resultado (minimo 1 decimal maximo 2)-->
+            <!--se usa para formatear el resultado (minimo 1 decimal maximo 2)-->
             <h3>Este es tu indice de masa corporal: <span
                     th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span>!</h3>
             <h3>Este es tu rango segun tu indice de masa corporal: <span
@@ -178,28 +198,40 @@
                 <p>No tienes rutinas creadas. ¡Crea tu primera rutina arriba!</p>
             </div>
 
-            <!-- Recorre cada rutina del usuario (solo se ejecuta este div si existe, si no existen rutinas se lo salta)-->
+            <!-- Recorre cada rutina del usuario -->
             <div th:each="rutina, rutinaStatus : ${usuario.rutinas}">
                 <div class="rutina-container">
                     <h3 th:text="${rutina.nombre}"></h3>
 
-                    <div style="display: flex;">
-                        <!-- Formulario para agregar ejercicio a esta rutina específica -->
-                        <form action="/agregar-ejercicio" method="post">
-                            <input type="hidden" name="rutinaIndex"
-                                th:value="${rutinaStatus.index}"><!--rutinaStatus.index devuelve el indice de la rutina actual en el arrayList de rutinas-->
-                            <input type="text" name="nombreEjercicio" required>
-                            <button type="submit" style="background: #FF9800;">Agregar Ejercicio</button>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                        <!-- Formulario para agregar ejercicio con imagen -->
+                        <form action="/agregar-ejercicio" method="post" enctype="multipart/form-data"
+                            style="display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px; flex: 2; min-width: 300px;">
 
+                            <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
+
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <input type="text" name="nombreEjercicio" placeholder="Nombre del ejercicio" required
+                                    style="padding: 8px; flex: 2; min-width: 200px;">
+
+                                <input type="file" name="imagen" accept="image/*" style="padding: 5px; flex: 1; min-width: 150px;">
+
+                                <button type="submit"
+                                    style="background: #FF9800; padding: 8px 15px; white-space: nowrap;">
+                                    Agregar Ejercicio
+                                </button>
+                            </div>
+
+                            <small style="color: #666;">Formatos: JPG, PNG, GIF (máx 5MB) - Opcional</small>
                         </form>
-                        <form action="/eliminarRutina" method="post">
+
+                        <!-- Formulario de eliminar rutina -->
+                        <form action="/eliminarRutina" method="post" style="flex: 0; margin-left: auto;">
                             <input type="hidden" name="rutinaId" th:value="${rutina.id}">
                             <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
-                            <button type="submit" style="background: #c9363d;">Eliminar Rutina</button>
+                            <button type="submit" style="background: #c9363d; height: 40px;">Eliminar Rutina</button>
                         </form>
                     </div>
-
-
 
                     <!-- Si la rutina aun no tiene ejercicio muestra este div-->
                     <div th:if="${rutina.ejercicios.empty}" style="text-align: center; padding: 15px; color: #888;">
@@ -207,33 +239,93 @@
                     </div>
 
                     <!-- Lista de ejercicios de la rutina -->
-                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}">
-                        <!-- Div condicional según estado -->
-                        <div th:if="${ejercicio.completado}" class="ejercicio completado">
-                            <p>
-                                <strong th:text="${ejercicio.nombre}"></strong> -
-                                Estado: COMPLETADO
-                            <form action="/cambiarEstado" method="post" style="display: inline;">
-                                <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
-                                <input type="submit" value="Marcar pendiente">
-                            </form>
-                            </p>
+                    <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        
+                        <!-- Div condicional según estado (solo para el contenido principal) -->
+                        <div th:if="${ejercicio.completado}" class="ejercicio completado" style="margin-bottom: 5px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <!-- Mostrar imagen si existe -->
+                                <div th:if="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                    <img th:src="${ejercicio.imagenUrl}"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
+                                </div>
+                                <!-- Icono placeholder si no hay imagen -->
+                                <div th:unless="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0; 
+                                    background: #e0e0e0; border-radius: 5px; 
+                                    display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    💪
+                                </div>
+
+                                <!-- Información del ejercicio -->
+                                <div style="flex-grow: 1;">
+                                    <strong th:text="${ejercicio.nombre}"></strong> -
+                                    Estado: COMPLETADO
+                                </div>
+
+                                <!-- Botón cambiar estado -->
+                                <form action="/cambiarEstado" method="post" style="display: inline;">
+                                    <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
+                                    <input type="submit" value="Marcar pendiente" 
+                                        style="background: #f44336; color: white; border: none; 
+                                        padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                </form>
+                            </div>
                         </div>
-                        <div th:unless="${ejercicio.completado}" class="ejercicio">
-                            <p>
-                                <strong th:text="${ejercicio.nombre}"></strong> -
-                                Estado: PENDIENTE
-                            <form action="/cambiarEstado" method="post" style="display: inline;">
-                                <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
-                                <input type="submit" value="Marcar completado">
+
+                        <div th:unless="${ejercicio.completado}" class="ejercicio" style="margin-bottom: 5px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <!-- Mostrar imagen si existe -->
+                                <div th:if="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                    <img th:src="${ejercicio.imagenUrl}"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
+                                </div>
+                                <!-- Icono por si no hay imagen -->
+                                <div th:unless="${ejercicio.imagenUrl}" style="width: 60px; height: 60px; flex-shrink: 0; 
+                                    background: #e0e0e0; border-radius: 5px; 
+                                    display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    💪
+                                </div>
+
+                                <!-- Información del ejercicio -->
+                                <div style="flex-grow: 1;">
+                                    <strong th:text="${ejercicio.nombre}"></strong> -
+                                    Estado: PENDIENTE
+                                </div>
+
+                                <!-- Botón cambiar estado -->
+                                <form action="/cambiarEstado" method="post" style="display: inline;">
+                                    <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
+                                    <input type="submit" value="Marcar completado" 
+                                        style="background: #4CAF50; color: white; border: none; 
+                                        padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- 🔴 FORMULARIO DE IMAGEN (UNA SOLA VEZ por ejercicio, FUERA de los condicionales) -->
+                        <div class="ejercicio-footer">
+                            <form action="/actualizar-imagen-ejercicio" method="post" enctype="multipart/form-data"
+                                  style="display: inline-block;">
+                                <input type="hidden" name="ejercicioId" th:value="${ejercicio.id}">
+                                <input type="file" name="imagen" accept="image/*" style="display: none;"
+                                       th:id="'file-' + ${ejercicio.id}" onchange="this.form.submit()">
+                                <button type="button" th:onclick="'seleccionarImagen(' + ${ejercicio.id} + ')'"
+                                        class="btn-imagen">
+                                    📷 Cambiar imagen
+                                </button>
                             </form>
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function seleccionarImagen(idEjercicio) {
+            document.getElementById('file-' + idEjercicio).click();
+        }
+    </script>
 </body>
 
 </html>

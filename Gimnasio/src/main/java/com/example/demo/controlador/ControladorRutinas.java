@@ -1,5 +1,7 @@
 package com.example.demo.controlador;
 
+import java.io.IOException;
+
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,11 +10,13 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Servicios.EjercicioServicio;
 import com.example.demo.Servicios.RutinaServicio;
 import com.example.demo.Servicios.UsuarioServicio;
 import com.example.demo.ServiciosImplementacion.ChatService;
+import com.example.demo.ServiciosImplementacion.CloudinaryServicio;
 import com.example.demo.clases.Ejercicio;
 import com.example.demo.clases.Rutina;
 import com.example.demo.clases.Usuario;
@@ -36,6 +40,9 @@ public class ControladorRutinas {
     /* para open ai */
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private CloudinaryServicio cloudinaryServicio;
 
     // Página principal - si no hay usuario va al login
     @GetMapping("/")
@@ -178,6 +185,9 @@ public class ControladorRutinas {
             System.out.println("usuario y rutina:" + usuarioYrutina);
             Cookie cookie = new Cookie("ultimaRutina", usuarioYrutina);
             cookie.setMaxAge(3 * 24 * 3600);
+            cookie.setPath("/");
+            cookie.setHttpOnly(false);
+
 
             // enviamos la cookie al servidor para que sea almacenada(gracias al objeto
             // HttpServletResponse)
@@ -207,31 +217,38 @@ public class ControladorRutinas {
 
     // Agregar ejercicio a rutina
     @PostMapping("/agregar-ejercicio")
-    public String agregarEjercicio(@RequestParam String nombreEjercicio, @RequestParam int rutinaIndex,
-            HttpSession session) {
+    public String agregarEjercicio(
+            @RequestParam String nombreEjercicio,
+            @RequestParam int rutinaIndex,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagen, // 🔴 NUEVO
+            HttpSession session) throws IOException {
 
-        // obtenemos el usuario de la sesion
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        // agrega un ejercicio a una rutina especifica usando el indice(enviado desde el
-        // html)
         if (usuario != null && rutinaIndex >= 0 && rutinaIndex < usuario.getRutinas().size()) {
 
-            // creamos una rutina y le damos el valor de getRutinas que es un array de todas
-            // las rutinas Y USAMOS .GET(RUTINAinDEX) PARA DECIRLE DE ESE ARRAY QUE RUTINA
-            // ES LA QUE BUSCO
             Rutina rutina = usuario.getRutinas().get(rutinaIndex);
 
-            // agregamos el ejercicio (dandole el nombre que nos viene desde el formulario
-            // de /agregar-ejercicio
+            // Crear el ejercicio
             Ejercicio ej = new Ejercicio(nombreEjercicio, rutina);
-            servicioEjercicio.guardarEjercicio(ej);// guardamos el ejercicio en la bbdd
-            // MUY IMPORTANTE: al hacer esto, JPA automaticamente actualiza el objeto para
-            // que podamos acceder tambien a su id :
 
-            rutina.agregarEjercicio(ej);// guardamos el ejercicio en el array de ejercicios de la clase rutina
+            // 🔴 Si hay imagen, subirla a Cloudinary
+            if (imagen != null && !imagen.isEmpty()) {
+                try {
+                    String imagenUrl = cloudinaryServicio.subirImagen(imagen);
+                    ej.setImagenUrl(imagenUrl);
+                    System.out.println("✅ Imagen subida para ejercicio: " + nombreEjercicio);
+                } catch (Exception e) {
+                    System.out.println("❌ Error al subir imagen: " + e.getMessage());
+                    // El ejercicio se crea igual aunque falle la imagen
+                }
+            }
 
+            // Guardar en BD
+            servicioEjercicio.guardarEjercicio(ej);
+            rutina.agregarEjercicio(ej);
         }
+
         return "redirect:/";
     }
 
@@ -270,7 +287,6 @@ public class ControladorRutinas {
         return "redirect:/";
     }
 
-
     /* open ai */
     @GetMapping("/chat")
     public String mostrarChat(Model model, HttpSession session) {
@@ -301,6 +317,47 @@ public class ControladorRutinas {
         model.addAttribute("respuesta", respuesta);
 
         return "chat";
+    }
+
+    @PostMapping("/actualizar-imagen-ejercicio")
+    public String actualizarImagenEjercicio(
+            @RequestParam Integer ejercicioId,
+            @RequestParam("imagen") MultipartFile imagen,
+            HttpSession session) throws IOException {
+
+        Ejercicio ejercicio = servicioEjercicio.traerEjercicio(ejercicioId);
+
+        if (ejercicio != null && imagen != null && !imagen.isEmpty()) {
+            try {
+                // Si ya tenía imagen, eliminar la anterior de Cloudinary
+                if (ejercicio.getImagenUrl() != null) {
+                    cloudinaryServicio.eliminarImagen(ejercicio.getImagenUrl());
+                }
+
+                // Subir nueva imagen
+                String nuevaUrl = cloudinaryServicio.subirImagen(imagen);
+                ejercicio.setImagenUrl(nuevaUrl);
+                servicioEjercicio.guardarEjercicio(ejercicio);
+                System.out.println("✅ Imagen actualizada para ejercicio: " + ejercicio.getNombre());
+
+                // 🔴 ACTUALIZAR SESIÓN para que la vista se refresque
+                Usuario usuario = (Usuario) session.getAttribute("usuario");
+                if (usuario != null) {
+                    Usuario usuarioActualizado = servicioUsuario.traerUsuario(usuario.getId());
+                    // Inicializar relaciones
+                    Hibernate.initialize(usuarioActualizado.getRutinas());
+                    for (Rutina rutina : usuarioActualizado.getRutinas()) {
+                        Hibernate.initialize(rutina.getEjercicios());
+                    }
+                    session.setAttribute("usuario", usuarioActualizado);
+                }
+
+            } catch (Exception e) {
+                System.out.println("❌ Error al actualizar imagen: " + e.getMessage());
+            }
+        }
+
+        return "redirect:/";
     }
 
 }
