@@ -45,7 +45,7 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
         // Encriptar contraseña antes de guardar
         String contrasenaEncriptada = passwordEncoder.encode(u.getContrasena());
         u.setContrasena(contrasenaEncriptada);
-        System.out.println("🔐 Usuario guardado y caché limpiada para: " + u.getNombre());
+        System.out.println("Usuario guardado y caché limpiada para: " + u.getNombre());
         return repo.save(u);
     }
 

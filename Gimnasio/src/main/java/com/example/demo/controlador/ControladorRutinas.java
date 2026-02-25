@@ -254,7 +254,6 @@ public class ControladorRutinas {
                 }
             }
 
-            // Resto del código igual...
             try {
                 Rutina rutina = usuario.getRutinas().get(rutinaIndex);
                 Ejercicio ej = new Ejercicio(nombreEjercicio, rutina);
@@ -270,7 +269,7 @@ public class ControladorRutinas {
                 redirectAttributes.addFlashAttribute("exito", "Ejercicio agregado correctamente");
 
             } catch (Exception e) {
-                System.out.println("❌ Error inesperado: " + e.getMessage());
+                System.out.println(" Error inesperado: " + e.getMessage());
                 e.printStackTrace();
                 redirectAttributes.addFlashAttribute("error", "Error al agregar ejercicio: " + e.getMessage());
             }
@@ -289,12 +288,12 @@ public class ControladorRutinas {
         System.out.println("\n === ACTUALIZAR IMAGEN ===");
         System.out.println(" Ejercicio ID: " + ejercicioId);
 
-        // 🔴 VALIDAR TAMAÑO MANUALMENTE
+        // VALIDAMOS TAMAÑO 
         if (imagen != null && !imagen.isEmpty()) {
             long maxSize = 2 * 1024 * 1024; // 2MB
             long fileSize = imagen.getSize();
 
-            System.out.println("📸 Tamaño imagen: " + fileSize + " bytes (" + (fileSize / (1024 * 1024)) + "MB)");
+            System.out.println(" Tamaño imagen: " + fileSize + " bytes (" + (fileSize / (1024 * 1024)) + "MB)");
 
             if (fileSize > maxSize) {
                 double tamañoMB = (double) fileSize / (1024 * 1024);
@@ -343,11 +342,11 @@ public class ControladorRutinas {
                 }
 
             } catch (Exception e) {
-                System.out.println("❌ Error al actualizar imagen: " + e.getMessage());
+                System.out.println(" Error al actualizar imagen: " + e.getMessage());
                 redirectAttributes.addFlashAttribute("error", "Error al subir la imagen: " + e.getMessage());
             }
         } else {
-            System.out.println("❌ Ejercicio no encontrado o imagen vacía");
+            System.out.println(" Ejercicio no encontrado o imagen vacía");
             redirectAttributes.addFlashAttribute("error", "No se pudo actualizar la imagen");
         }
 

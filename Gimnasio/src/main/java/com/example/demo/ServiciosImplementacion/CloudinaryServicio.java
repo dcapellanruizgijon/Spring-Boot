@@ -17,7 +17,6 @@ public class CloudinaryServicio {
 
     
     // Sube una imagen a Cloudinary y devuelve la URL segura
-     
     public String subirImagen(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), 
             ObjectUtils.asMap(
