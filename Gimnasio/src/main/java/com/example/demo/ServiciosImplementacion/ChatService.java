@@ -20,7 +20,7 @@ public class ChatService {
             Prompt prompt = new Prompt(mensajeUsuario);
             ChatResponse response = chatModel.call(prompt);
             
-            // Forma correcta de obtener el contenido en versiones recientes
+            // PARA OBTENERLO EN VERSIONES RECIENTES
             return response.getResult().getOutput().getText();
             
         } catch (Exception e) {

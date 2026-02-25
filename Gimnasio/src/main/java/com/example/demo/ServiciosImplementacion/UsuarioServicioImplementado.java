@@ -35,10 +35,11 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     // @Cacheable(value = "usuarios", key = "#id")//Para que una vez rescatado un
     // usuario no tenga que volver a acceder a la base de datos
     // public Usuario obtenerUsuario(Integer id) {
-    // return repo.findById(id).get();//no se por que da ese warn
+    // return repo.findById(id).get();
     // }
 
     @Override
+    //limpia la caché para que se pueda encontrar a un usuario reciencreado cuando se hace login
     @CacheEvict(value = { "usuariosBasicos", "usuariosCompletos", "usuarios",
             "usuariosCompletosPorNombre" }, key = "#u.nombre", allEntries = true) // Limpia toda la caché relacionada
     public Usuario guardarTrabajador(Usuario u) {
@@ -60,15 +61,15 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     }
 
     @Override
-    @Cacheable(value = "usuarios", key = "#idUsuario")
+    @Cacheable(value = "usuarios", key = "#idUsuario")//ALMACENA EL RESULTADO DE UN MÉTODO EN CACHÉ PARA QUE NO SE EJECUTE REPETIDAMENTE
     public Usuario traerUsuario(Integer idUsuario) {
         System.out.println(" CONSULTANDO BBDD para usuario ID: " + idUsuario);
         return repo.findById(idUsuario).get();
     }
 
-    // devuelve el usuario por nombre
+    // devuelve y gurada en la caché el usuario por nombre
     @Override
-    @Cacheable(value = "usuariosBasicos", key = "#nombre")
+    @Cacheable(value = "usuariosBasicos", key = "#nombre")//ALMACENA EL RESULTADO DE UN MÉTODO EN CACHÉ PARA QUE NO SE EJECUTE REPETIDAMENTE
     public Usuario buscarPorNombre(String nombre) {
         System.out.println(" CONSULTANDO BBDD (básico) para: " + nombre);
         return repo.findByNombre(nombre);
@@ -92,7 +93,7 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
 
     /* devuelve el usuario con rutinas y ejercicios */
     @Override
-    @Cacheable(value = "usuariosCompletosPorNombre", key = "#nombre")
+    @Cacheable(value = "usuariosCompletosPorNombre", key = "#nombre")//ALMACENA EL RESULTADO DE UN MÉTODO EN CACHÉ PARA QUE NO SE EJECUTE REPETIDAMENTE
     @Transactional
     public Usuario buscarUsuarioCompletoPorNombre(String nombre) {
         System.out.println("🔴 CARGANDO usuario COMPLETO desde BBDD (por nombre): " + nombre);

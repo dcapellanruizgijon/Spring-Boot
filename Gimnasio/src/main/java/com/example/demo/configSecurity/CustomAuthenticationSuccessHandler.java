@@ -33,7 +33,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String username = authentication.getName();
 
-        // ✅ AHORA USA EL MÉTODO CORRECTO que carga todo
+        // este metodo carga el usuario completo
         Usuario usuarioCompleto = usuarioServicio.buscarUsuarioCompletoPorNombre(username);
 
         if (usuarioCompleto != null) {
