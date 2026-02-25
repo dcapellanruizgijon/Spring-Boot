@@ -38,11 +38,14 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     // return repo.findById(id).get();//no se por que da ese warn
     // }
 
-    @Override /* el nombre seria guardarUsuario() */
+    @Override
+    @CacheEvict(value = { "usuariosBasicos", "usuariosCompletos", "usuarios",
+            "usuariosCompletosPorNombre" }, key = "#u.nombre", allEntries = true) // Limpia toda la caché relacionada
     public Usuario guardarTrabajador(Usuario u) {
         // Encriptar contraseña antes de guardar
         String contrasenaEncriptada = passwordEncoder.encode(u.getContrasena());
         u.setContrasena(contrasenaEncriptada);
+        System.out.println("🔐 Usuario guardado y caché limpiada para: " + u.getNombre());
         return repo.save(u);
     }
 
@@ -63,15 +66,15 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
         return repo.findById(idUsuario).get();
     }
 
-    //devuelve el usuario por nombre
+    // devuelve el usuario por nombre
     @Override
     @Cacheable(value = "usuariosBasicos", key = "#nombre")
     public Usuario buscarPorNombre(String nombre) {
         System.out.println(" CONSULTANDO BBDD (básico) para: " + nombre);
-        return repo.findByNombre(   nombre);
+        return repo.findByNombre(nombre);
     }
 
-    /*devuelve el ususario por id */
+    /* devuelve el ususario por id */
     @Override
     @Cacheable(value = "usuariosCompletos", key = "#id")
     public Usuario traerUsuarioConTodo(Integer id) {
@@ -87,7 +90,6 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
         return repo.findById(idUsuario).get();
     }
 
-
     /* devuelve el usuario con rutinas y ejercicios */
     @Override
     @Cacheable(value = "usuariosCompletosPorNombre", key = "#nombre")
@@ -99,11 +101,11 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
         Usuario usuario = repo.findByNombre(nombre);
 
         if (usuario != null) {
-            //carga de todas las relaciones
-            
+            // carga de todas las relaciones
+
             usuario.getRutinas().size(); // Carga las rutinas
 
-            //para cargar los ejercicios de cada rutina
+            // para cargar los ejercicios de cada rutina
             for (Rutina rutina : usuario.getRutinas()) {
                 rutina.getEjercicios().size(); // Carga los ejercicios
             }
