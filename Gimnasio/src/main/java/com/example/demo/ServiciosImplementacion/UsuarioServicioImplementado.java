@@ -111,8 +111,6 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
                 rutina.getEjercicios().size(); // Carga los ejercicios
             }
 
-            System.out.println("✅ Usuario completo cargado: " + nombre +
-                    " (rutinas: " + usuario.getRutinas().size() + ")");
         }
 
         return usuario;
