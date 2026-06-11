@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fast Rutinas - Tu gestor de ejercicios</title>
+    <title th:text="#{app.title}">Fast Rutinas - Tu gestor de ejercicios</title>
 
     <!-- Google Fonts para tipografía moderna -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* Tu CSS existente se mantiene igual */
         * {
             margin: 0;
             padding: 0;
@@ -430,6 +431,29 @@
             margin-bottom: 1rem;
         }
 
+        /* Language selector */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .language-selector a {
+            text-decoration: none;
+            margin: 0 5px;
+            color: #0984e3;
+            font-weight: 600;
+        }
+        
+        .language-selector a:hover {
+            color: #6c5ce7;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -468,6 +492,14 @@
 
             .rutina-container form[action="/eliminarRutina"] {
                 margin-left: 0;
+            }
+            
+            .language-selector {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 1rem;
+                text-align: center;
             }
         }
 
@@ -510,13 +542,19 @@
 
 <body>
     <div class="container">
-        <h1><i class="fas fa-dumbbell" style="background: none; -webkit-text-fill-color: #0984e3;"></i> FAST RUTINAS
+        <h1><i class="fas fa-dumbbell" style="background: none; -webkit-text-fill-color: #0984e3;"></i> 
+            <span th:text="#{app.title}">FAST RUTINAS</span>
         </h1>
 
         <!-- Información del usuario y cookies -->
         <div class="container-bienvenida">
-            <h2><i class="fas fa-user-circle"></i> ¡Bienvenido, <span th:text="${usuario.nombre}"></span>!</h2>
-            <!-- Mostrar mensajes de error (se mostrarán en la misma página) -->
+            <h2><i class="fas fa-user-circle"></i> <span th:text="#{home.welcome}">¡Bienvenido</span>, <span th:text="${usuario.nombre}"></span>!</h2>
+            <div class="language-selector">
+                <a href="#" th:href="@{/cambiar-idioma(lang='es')}">🇪🇸 Español</a> |
+                <a href="#" th:href="@{/cambiar-idioma(lang='en')}">🇬🇧 English</a> |
+                <a href="#" th:href="@{/cambiar-idioma(lang='ca')}">🇪🇸 Català</a>
+            </div>
+            <!-- Mostrar mensajes de error -->
             <div th:if="${error}"
                 style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin: 10px 0; border: 1px solid #f5c6cb; display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 20px;">⚠️</span>
@@ -534,9 +572,9 @@
                     style="background: none; border: none; color: #155724; cursor: pointer; font-size: 18px;">✖</button>
             </div>
 
-            <h3><i class="fas fa-calculator"></i> IMC: <span
+            <h3><i class="fas fa-calculator"></i> <span th:text="#{home.imc}">IMC</span>: <span
                     th:text="${#numbers.formatDecimal(usuario.calculaIndiceMasaCorporal(), 1, 2)}"></span></h3>
-            <h3><i class="fas fa-chart-line"></i> Categoría: <span th:text="${usuario.obtenerCategoriaIMC()}"></span>
+            <h3><i class="fas fa-chart-line"></i> <span th:text="#{home.category}">Categoría</span>: <span th:text="${usuario.obtenerCategoriaIMC()}"></span>
             </h3>
 
             <!-- Mostrar cookie de última rutina -->
@@ -545,46 +583,60 @@
                 <div class="button-group">
                     <a href="/eliminar-cookie">
                         <button class="btn-danger">
-                            <i class="fas fa-trash-alt"></i> Eliminar Cookie
+                            <i class="fas fa-trash-alt"></i> <span th:text="#{home.delete.cookie}">Eliminar Cookie</span>
                         </button>
                     </a>
 
                     <a href="/cerrarSesion">
                         <button class="btn-warning">
-                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            <i class="fas fa-sign-out-alt"></i> <span th:text="#{nav.logout}">Cerrar Sesión</span>
                         </button>
                     </a>
 
                     <a href="/chat">
                         <button class="btn-chat">
-                            <i class="fas fa-robot"></i> Chat IA
+                            <i class="fas fa-robot"></i> <span th:text="#{nav.chat}">Chat IA</span>
                         </button>
                     </a>
                 </div>
+                
+                <!-- Botón admin solo visible para administradores -->
+                <div th:if="${usuario.rol == 'ADMIN'}" style="margin-top: 1rem;">
+                    <a href="/admin/panel" class="btn-primary button" style="text-decoration: none;">
+                        <i class="fas fa-crown"></i> <span th:text="#{nav.admin}">Panel de Administración</span>
+                    </a>
+                </div>
 
+                <a href="/clima">
+    <button class="btn-info">
+        <i class="fas fa-cloud-sun"></i> <span th:text="#{nav.weather}">Ver Clima</span>
+    </button>
+</a>
             </div>
         </div>
+        
 
         <!-- Crear nueva rutina -->
         <div class="section">
-            <h2><i class="fas fa-plus-circle"></i> Crear Nueva Rutina</h2>
+            <h2><i class="fas fa-plus-circle"></i> <span th:text="#{home.create.routine}">Crear Nueva Rutina</span></h2>
             <form action="/crear-rutina" method="post">
-                <input type="text" name="nombre" placeholder="Ej: Rutina de piernas, Full body..." required>
+                <input type="text" name="nombre" th:placeholder="#{routine.name.placeholder}" placeholder="Ej: Rutina de piernas, Full body..." required>
                 <button type="submit" class="btn-success">
-                    <i class="fas fa-plus"></i> Crear Rutina
+                    <i class="fas fa-plus"></i> <span th:text="#{routine.create.button}">Crear Rutina</span>
                 </button>
             </form>
         </div>
 
         <!-- Lista de rutinas -->
         <div class="section">
-            <h2><i class="fas fa-list"></i> Mis Rutinas</h2>
+            <h2><i class="fas fa-list"></i> <span th:text="#{home.my.routines}">Mis Rutinas</span></h2>
 
             <!-- Si no hay rutinas -->
-            <div th:if="${usuario.rutinas.empty}" class="empty-message">
-                <i class="fas fa-clipboard-list"></i>
-                <p>No tienes rutinas creadas. ¡Crea tu primera rutina arriba!</p>
-            </div>
+            <!-- Si no hay rutinas -->
+<div th:if="${usuario.rutinas.empty}" class="empty-message">
+    <i class="fas fa-clipboard-list"></i>
+    <p th:text="#{home.no.routines}"></p>
+</div>
 
             <!-- Recorrer rutinas -->
             <div th:each="rutina, rutinaStatus : ${usuario.rutinas}">
@@ -597,13 +649,13 @@
                             <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
 
                             <div>
-                                <input type="text" name="nombreEjercicio" placeholder="Nombre del ejercicio" required>
+                                <input type="text" name="nombreEjercicio" th:placeholder="#{exercise.name.placeholder}" placeholder="Nombre del ejercicio" required>
                                 <input type="file" name="imagen" accept="image/*">
                                 <button type="submit" class="btn-warning">
-                                    <i class="fas fa-plus-circle"></i> Agregar
+                                    <i class="fas fa-plus-circle"></i> <span th:text="#{routine.add.exercise.button}">Agregar</span>
                                 </button>
                             </div>
-                            <small><i class="fas fa-info-circle"></i> Formatos: JPG, PNG, GIF (máx 1MB)</small>
+                            <small><i class="fas fa-info-circle"></i> <span th:text="#{exercise.image.info}">Formatos: JPG, PNG, GIF (máx 1MB)</span></small>
                         </form>
 
                         <!-- Botón eliminar rutina -->
@@ -611,17 +663,17 @@
                             <input type="hidden" name="rutinaId" th:value="${rutina.id}">
                             <input type="hidden" name="rutinaIndex" th:value="${rutinaStatus.index}">
                             <button type="submit" class="btn-danger">
-                                <i class="fas fa-trash"></i> Eliminar Rutina
+                                <i class="fas fa-trash"></i> <span th:text="#{routine.delete.button}">Eliminar Rutina</span>
                             </button>
                         </form>
                     </div>
 
                     <!-- Si la rutina no tiene ejercicios -->
-                    <div th:if="${rutina.ejercicios.empty}" class="empty-message"
-                        style="margin: 1rem 0; padding: 1.5rem;">
-                        <i class="fas fa-exercise" style="font-size: 2rem;"></i>
-                        <p>Esta rutina no tiene ejercicios. ¡Agrega algunos!</p>
-                    </div>
+                    <!-- Si la rutina no tiene ejercicios -->
+<div th:if="${rutina.ejercicios.empty}" class="empty-message" style="margin: 1rem 0; padding: 1.5rem;">
+    <i class="fas fa-dumbbell" style="font-size: 2rem;"></i>
+    <p th:text="#{routine.no.exercises}"></p>
+</div>
 
                     <!-- Lista de ejercicios -->
                     <div th:each="ejercicio, ejEstatus : ${rutina.ejercicios}">
@@ -640,14 +692,14 @@
                                 <div>
                                     <strong><i class="fas fa-check-circle" style="color: #00b894;"></i> <span
                                             th:text="${ejercicio.nombre}"></span></strong>
-                                    <span class="estado-completado">COMPLETADO</span>
+                                    <span class="estado-completado" th:text="#{exercise.status.completed}">COMPLETADO</span>
                                 </div>
 
                                 <!-- Botón cambiar estado -->
                                 <form action="/cambiarEstado" method="post">
                                     <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
                                     <button type="submit" class="btn-warning">
-                                        <i class="fas fa-undo"></i> Marcar pendiente
+                                        <i class="fas fa-undo"></i> <span th:text="#{exercise.mark.pending}">Marcar pendiente</span>
                                     </button>
                                 </form>
                             </div>
@@ -667,14 +719,14 @@
                                 <div>
                                     <strong><i class="far fa-circle" style="color: #fdcb6e;"></i> <span
                                             th:text="${ejercicio.nombre}"></span></strong>
-                                    <span class="estado-pendiente">PENDIENTE</span>
+                                    <span class="estado-pendiente" th:text="#{exercise.status.pending}">PENDIENTE</span>
                                 </div>
 
                                 <!-- Botón cambiar estado -->
                                 <form action="/cambiarEstado" method="post">
                                     <input type="hidden" name="idEjercicio" th:value="${ejercicio.id}">
                                     <button type="submit" class="btn-success">
-                                        <i class="fas fa-check"></i> Marcar completado
+                                        <i class="fas fa-check"></i> <span th:text="#{exercise.mark.completed}">Marcar completado</span>
                                     </button>
                                 </form>
                             </div>
@@ -688,7 +740,7 @@
                                     style="display: none;" onchange="this.form.submit()">
                                 <button type="button" th:onclick="'seleccionarImagen(' + ${ejercicio.id} + ')'"
                                     class="btn-imagen">
-                                    <i class="fas fa-camera"></i> Cambiar imagen
+                                    <i class="fas fa-camera"></i> <span th:text="#{exercise.update.image}">Cambiar imagen</span>
                                 </button>
                             </form>
                         </div>

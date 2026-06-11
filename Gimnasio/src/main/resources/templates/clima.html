@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clima para Entrenar - Fast Rutinas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-box button {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .search-box button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .weather-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .weather-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .weather-temp {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 15px 0;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cloud-sun"></i> Clima para Entrenar</h1>
+            <p>Consulta el clima y recibe recomendaciones</p>
+        </div>
+        
+        <div class="content">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i> <span th:text="${usuario.nombre}"></span>
+            </div>
+            
+            <form method="get" class="search-box">
+                <input type="text" name="ciudad" th:value="${ciudad}" placeholder="Ej: Madrid, Barcelona, London..." required>
+                <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+            </form>
+            
+            <div th:if="${clima}">
+                <div class="weather-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> <span th:text="${ciudad}"></span></h3>
+                    <div class="weather-temp">
+                        <i class="fas fa-thermometer-half"></i> <span th:text="${clima}"></span>
+                    </div>
+                </div>
+                
+                <div class="recommendation">
+                    <i class="fas fa-dumbbell"></i>
+                    <p th:text="${recomendacion}"></p>
+                </div>
+            </div>
+            
+            <div th:unless="${clima}">
+                <div class="weather-card">
+                    <p><i class="fas fa-info-circle"></i> Busca una ciudad para ver el clima</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

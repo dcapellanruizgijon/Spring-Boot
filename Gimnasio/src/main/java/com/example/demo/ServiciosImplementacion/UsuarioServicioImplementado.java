@@ -21,8 +21,9 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
 
     @Autowired
     private UsuarioRepository repo;
+
     @Autowired
-    private PasswordEncoder passwordEncoder; /* para encriptar la contraseña */
+    private PasswordEncoder passwordEncoder;
 
     // devuelve una lista de todos los usuarios
     @Override
@@ -39,15 +40,28 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
     // }
 
     @Override
-    //limpia la caché para que se pueda encontrar a un usuario reciencreado cuando se hace login
     @CacheEvict(value = { "usuariosBasicos", "usuariosCompletos", "usuarios",
-            "usuariosCompletosPorNombre" }, key = "#u.nombre", allEntries = true) // Limpia toda la caché relacionada
+            "usuariosCompletosPorNombre" }, key = "#u.nombre", allEntries = true)
     public Usuario guardarTrabajador(Usuario u) {
-        // Encriptar contraseña antes de guardar
-        String contrasenaEncriptada = passwordEncoder.encode(u.getContrasena());
-        u.setContrasena(contrasenaEncriptada);
-        System.out.println("Usuario guardado y caché limpiada para: " + u.getNombre());
-        return repo.save(u);
+        System.out.println("=== GUARDANDO USUARIO ===");
+        System.out.println("Nombre: " + u.getNombre());
+        System.out.println("Contraseña ANTES de encriptar: " + u.getContrasena());
+        
+        // SOLO encriptar si la contraseña no está ya encriptada
+        if (!u.getContrasena().startsWith("$2a$")) {
+            String contrasenaEncriptada = passwordEncoder.encode(u.getContrasena());
+            u.setContrasena(contrasenaEncriptada);
+            System.out.println("✅ Contraseña encriptada");
+        } else {
+            System.out.println("ℹ️ La contraseña ya está encriptada");
+        }
+        
+        System.out.println("Contraseña DESPUÉS: " + u.getContrasena());
+        
+        Usuario saved = repo.save(u);
+        System.out.println("✅ Usuario guardado con ID: " + saved.getId());
+        
+        return saved;
     }
 
     @Override
@@ -115,5 +129,6 @@ public class UsuarioServicioImplementado implements UsuarioServicio {
 
         return usuario;
     }
+    
 
 }

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-user {
+            background: #28a745;
+            color: white;
+        }
+
+        .volver {
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 Panel de Administración</h1>
+            <div class="header-info">
+                <span>Bienvenido, <strong th:text="${usuarioActual.nombre}"></strong></span>
+                <a href="/" class="btn btn-secondary">🏠 Ir al Inicio</a>
+                <a href="/cerrarSesion" class="btn btn-danger">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Gestión de Usuarios</h2>
+                <a href="/admin/usuarios/nuevo" class="btn btn-primary">➕ Nuevo Usuario</a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Edad</th>
+                        <th>Peso (kg)</th>
+                        <th>Altura (cm)</th>
+                        <th>IMC</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${usuarios}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.nombre}"></td>
+                        <td th:text="${user.edad}"></td>
+                        <td th:text="${user.peso}"></td>
+                        <td th:text="${user.altura}"></td>
+                        <td th:text="${user.calculaIndiceMasaCorporal()}"></td>
+                        <td>
+                            <span th:class="${user.rol == 'ADMIN'} ? 'badge badge-admin' : 'badge badge-user'" 
+                                  th:text="${user.rol}"></span>
+                        </td>
+                        <td class="acciones">
+                            <a th:href="@{/admin/usuarios/editar/{id}(id=${user.id})}" 
+                               class="btn btn-warning">✏️ Editar</a>
+                            <form th:action="@{/admin/usuarios/eliminar/{id}(id=${user.id})}" 
+                                  method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger" 
+                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">🗑️ Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="volver">
+                <a href="/" class="btn btn-secondary">← Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

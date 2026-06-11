@@ -6,10 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -20,28 +25,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())   /*MUY IMPORTANTE PARA QUE NO FALLE EL POST DEL REGISTRO */
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/registro",
-                                "/swagger-ui/**",      // swagger
-                               "/v3/api-docs/**",     // swagger
-                               "/swagger-ui.html",      //swagger
-                                "/actuator/**")     //ACTUATOR
-                .permitAll()// Páginas públicas
-                
-                .anyRequest().authenticated()   // Resto protegido
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/actuator/**",
+                                "/cambiar-idioma",  // Permitir cambio de idioma sin autenticación
+                                "/cambiar-idioma/**")
+                .permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")    // Tu página de login personalizada
+                .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .successHandler(successHandler) 
+                .successHandler(successHandler)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/cerrarSesion")// Mantiene nuestro endpoint
-                .logoutSuccessUrl("/login?logout=true")// Redirige al login tras logout
-                .deleteCookies("JSESSIONID")//no eliminamos la cookie ultima rutina, solo la sessión
+                .logoutUrl("/cerrarSesion")
+                .logoutSuccessUrl("/login?logout=true")
+                .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .permitAll()
             )
@@ -49,5 +56,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+    
 }
